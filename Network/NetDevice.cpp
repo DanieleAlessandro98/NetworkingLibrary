@@ -5,17 +5,12 @@ namespace Net
 {
 	CNetDevice::CNetDevice()
 	{
-		Initialize();
+		m_isWSA = false;
 	}
 
 	CNetDevice::~CNetDevice()
 	{
 		Destroy();
-	}
-
-	void CNetDevice::Initialize()
-	{
-		m_isWSA = false;
 	}
 
 	void CNetDevice::Destroy()
@@ -30,8 +25,6 @@ namespace Net
 	bool CNetDevice::Create()
 	{
 		Destroy();
-
-		Initialize();
 
 		WSADATA wsaData;
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)

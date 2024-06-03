@@ -12,9 +12,6 @@ namespace Net
 		bool Create();
 
 	protected:
-		void Initialize();
-
-	protected:
 		bool m_isWSA;
 	};
 }

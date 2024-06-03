@@ -145,10 +145,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="NetDevice.cpp" />
+    <ClCompile Include="Socket.cpp" />
     <ClCompile Include="StdAfx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Definition.h" />
     <ClInclude Include="NetDevice.h" />
+    <ClInclude Include="NetException.h" />
+    <ClInclude Include="Socket.h" />
     <ClInclude Include="StdAfx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
