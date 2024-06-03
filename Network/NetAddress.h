@@ -18,6 +18,7 @@ namespace Net
 			void SetPort(int port);
 
 			std::string GetIP() const;
+			sockaddr_in GetAddrIn() const { return m_sockAddrIn; }
 
 		protected:
 			bool IsIP(const char* c_szAddr);

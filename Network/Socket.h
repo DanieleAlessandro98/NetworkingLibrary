@@ -2,6 +2,7 @@
 
 #include "Definition.h"
 #include "NetException.h"
+#include "NetAddress.h"
 
 namespace Net
 {
@@ -13,6 +14,8 @@ namespace Net
 
 			bool Create();
 			bool Close();
+			bool Bind(CNetAddress address);
+			bool Listen(CNetAddress address, int backlog = 5);
 
 			SOCKET GetSocket() { return m_Socket; }
 

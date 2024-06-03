@@ -41,8 +41,8 @@ namespace Net
 
 	bool CNetAddress::SetDNS(const char* c_szDNS)
 	{
-		struct addrinfo hints;
-		struct addrinfo* result = nullptr;
+		addrinfo hints;
+		addrinfo* result = nullptr;
 
 		memset(&hints, 0, sizeof(hints));
 		hints.ai_family = AF_INET;
@@ -53,7 +53,7 @@ namespace Net
 		if (ret != 0 || result == nullptr)
 			return false;
 
-		struct sockaddr_in* addr = reinterpret_cast<struct sockaddr_in*>(result->ai_addr);
+		sockaddr_in* addr = reinterpret_cast<sockaddr_in*>(result->ai_addr);
 		m_sockAddrIn.sin_addr = addr->sin_addr;
 
 		freeaddrinfo(result);

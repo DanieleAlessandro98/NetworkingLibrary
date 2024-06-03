@@ -10,36 +10,43 @@ int main()
 	std::unique_ptr<CNetDevice> netDevice = std::make_unique<CNetDevice>();
 	if (netDevice->Create())
 	{
-		std::cout << "winsock created" << std::endl;
-
-		CSocket connectSocket;
-		if (connectSocket.Create())
+		try
 		{
-			std::cout << "socket created" << std::endl;
+			std::cout << "winsock created" << std::endl;
 
-			std::unique_ptr<CNetAddress> netAddress = std::make_unique<CNetAddress>();
-			if (netAddress->Set("localhost", 8080))
+			CSocket connectSocket;
+			if (connectSocket.Create())
 			{
-				std::cout << "IP: " << netAddress->GetIP() << std::endl;
+				std::cout << "socket created" << std::endl;
+
+				std::unique_ptr<CNetAddress> netAddress = std::make_unique<CNetAddress>();
+				if (netAddress->Set("localhost", 8080))
+				{
+					std::cout << "IP: " << netAddress->GetIP() << std::endl;
+
+					if (connectSocket.Close())
+					{
+						std::cout << "socket closed" << std::endl;
+					}
+					else
+					{
+						std::cerr << "Failed to close socket" << std::endl;
+					}
+				}
+				else
+				{
+					std::cerr << "Failed to set address" << std::endl;
+				}
 			}
 			else
 			{
-				std::cerr << "Failed to set address" << std::endl;
-			}
-
-
-			if (connectSocket.Close())
-			{
-				std::cout << "socket closed" << std::endl;
-			}
-			else
-			{
-				std::cerr << "Failed to close socket" << std::endl;
+				std::cerr << "Failed to create socket" << std::endl;
 			}
 		}
-		else
+		catch (NetException ex)
 		{
-			std::cerr << "Failed to create socket" << std::endl;
+			std::cerr << "Exception: " << ex.what() << std::endl;
+			netDevice->Destroy();
 		}
 	}
 	else
