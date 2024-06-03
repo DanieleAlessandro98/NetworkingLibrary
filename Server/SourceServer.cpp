@@ -7,7 +7,6 @@ using namespace Net;
 int main()
 {
 	std::unique_ptr<CNetDevice> netDevice = std::make_unique<CNetDevice>();
-
 	if (netDevice->Create())
 	{
 		std::cout << "winsock created" << std::endl;

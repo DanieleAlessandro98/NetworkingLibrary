@@ -144,12 +144,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="NetAddress.cpp" />
     <ClCompile Include="NetDevice.cpp" />
     <ClCompile Include="Socket.cpp" />
     <ClCompile Include="StdAfx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Definition.h" />
+    <ClInclude Include="NetAddress.h" />
     <ClInclude Include="NetDevice.h" />
     <ClInclude Include="NetException.h" />
     <ClInclude Include="Socket.h" />

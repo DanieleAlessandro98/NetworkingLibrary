@@ -1,5 +1,6 @@
 #include "Network/NetDevice.h"
-#include <Network/Socket.h>
+#include "Network/NetAddress.h"
+#include "Network/Socket.h"
 #include <iostream>
 
 using namespace Net;
@@ -7,9 +8,7 @@ using namespace Net;
 int main()
 {
 	std::unique_ptr<CNetDevice> netDevice = std::make_unique<CNetDevice>();
-
-	bool resultCreate = netDevice->Create();
-	if (resultCreate)
+	if (netDevice->Create())
 	{
 		std::cout << "winsock created" << std::endl;
 
@@ -17,6 +16,18 @@ int main()
 		if (connectSocket.Create())
 		{
 			std::cout << "socket created" << std::endl;
+
+			std::unique_ptr<CNetAddress> netAddress = std::make_unique<CNetAddress>();
+			if (netAddress->Set("localhost", 8080))
+			{
+				std::cout << "IP: " << netAddress->GetIP() << std::endl;
+			}
+			else
+			{
+				std::cerr << "Failed to set address" << std::endl;
+			}
+
+
 			if (connectSocket.Close())
 			{
 				std::cout << "socket closed" << std::endl;
