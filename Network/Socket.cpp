@@ -8,6 +8,11 @@ namespace Net
 		this->m_Socket = INVALID_SOCKET;
 	}
 
+	CSocket::CSocket(SOCKET socket)
+	{
+		this->m_Socket = socket;
+	}
+
 	bool CSocket::Create()
 	{
 		if (m_Socket != INVALID_SOCKET)
@@ -47,6 +52,29 @@ namespace Net
 
 		if (listen(m_Socket, backlog) != 0)
 			throw NetException("CSocket::Listen - Error at listen(): %ld\n", WSAGetLastError());
+
+		return true;
+	}
+
+	bool CSocket::Accept(CSocket& clientSocket)
+	{
+		sockaddr_in addr = {};
+		int len = sizeof(sockaddr_in);
+
+		SOCKET acceptSocket = accept(m_Socket, (sockaddr*)(&addr), &len);
+		if (acceptSocket == INVALID_SOCKET)
+			throw NetException("CSocket::Accept - Error at accept(): %ld\n", WSAGetLastError());
+
+		clientSocket = CSocket(acceptSocket);
+
+		return true;
+	}
+
+	bool CSocket::Connect(CNetAddress serverAddress)
+	{
+		SOCKADDR_IN addrIn = serverAddress.GetAddrIn();
+		if (connect(m_Socket, (SOCKADDR*)&addrIn, sizeof(addrIn)) != 0)
+			throw NetException("CSocket::Connect - Error at connect(): %ld\n", WSAGetLastError());
 
 		return true;
 	}

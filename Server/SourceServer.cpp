@@ -28,13 +28,23 @@ int main()
 					{
 						std::cout << "socket listening" << std::endl;
 
-						if (listenSocket.Close())
+						CSocket newClientSocket;
+						if (listenSocket.Accept(newClientSocket))
 						{
-							std::cout << "socket closed" << std::endl;
+							std::cout << "new client accepted" << std::endl;
+
+							if (listenSocket.Close())
+							{
+								std::cout << "socket closed" << std::endl;
+							}
+							else
+							{
+								std::cerr << "Failed to close socket" << std::endl;
+							}
 						}
 						else
 						{
-							std::cerr << "Failed to close socket" << std::endl;
+							std::cerr << "Failed to accept new client" << std::endl;
 						}
 					}
 					else
@@ -65,5 +75,6 @@ int main()
 
 	netDevice->Destroy();
 
+	system("pause");
 	return 0;
 }

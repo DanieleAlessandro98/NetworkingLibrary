@@ -19,18 +19,27 @@ int main()
 			{
 				std::cout << "socket created" << std::endl;
 
-				std::unique_ptr<CNetAddress> netAddress = std::make_unique<CNetAddress>();
-				if (netAddress->Set("localhost", 8080))
+				CNetAddress netAddress;
+				if (netAddress.Set("localhost", 8080))
 				{
-					std::cout << "IP: " << netAddress->GetIP() << std::endl;
+					std::cout << "IP: " << netAddress.GetIP() << std::endl;
 
-					if (connectSocket.Close())
+					if (connectSocket.Connect(netAddress))
 					{
-						std::cout << "socket closed" << std::endl;
+						std::cout << "socket connected to the server" << std::endl;
+
+						if (connectSocket.Close())
+						{
+							std::cout << "socket closed" << std::endl;
+						}
+						else
+						{
+							std::cerr << "Failed to close socket" << std::endl;
+						}
 					}
 					else
 					{
-						std::cerr << "Failed to close socket" << std::endl;
+						std::cerr << "Failed to connect to the server" << std::endl;
 					}
 				}
 				else
@@ -56,5 +65,6 @@ int main()
 
 	netDevice->Destroy();
 
+	system("pause");
 	return 0;
 }
