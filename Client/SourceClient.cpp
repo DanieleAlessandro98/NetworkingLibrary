@@ -2,11 +2,33 @@
 #include "Network/NetAddress.h"
 #include "Network/Socket.h"
 #include <iostream>
+#include <algorithm>
+#include <random>
 
 using namespace Net;
 
+std::string random_string(size_t length)
+{
+	auto randchar = []() -> char
+	{
+		const char charset[] =
+			"0123456789"
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+			"abcdefghijklmnopqrstuvwxyz";
+		const size_t max_index = (sizeof(charset) - 1);
+		return charset[rand() % max_index];
+	};
+	std::string str(length, 0);
+	std::generate_n(str.begin(), length, randchar);
+	return str;
+}
+
 int main()
 {
+	std::random_device dev;
+	std::mt19937 rng(dev());
+	std::uniform_int_distribution<std::mt19937::result_type> dist(3, 15);
+
 	std::unique_ptr<CNetDevice> netDevice = std::make_unique<CNetDevice>();
 	if (netDevice->Create())
 	{
@@ -28,19 +50,21 @@ int main()
 					{
 						std::cout << "socket connected to the server" << std::endl;
 
-						for (int i = 0; i < 5; i++)
+						while (true)
 						{
-							char buffer[256];
-							strcpy_s(buffer, "Hello world from client!\0");
-							if (connectSocket.SendAll(buffer, 256))
-							{
-								std::cout << "Sending data to the server..." << std::endl;
-								char buffer1[256];
-								if (connectSocket.RecvAll(buffer1, 256))
-									std::cout << buffer1 << std::endl;
-							}
-							else
-								std::cerr << "Failed to send" << std::endl;
+							std::string bufToSend = random_string(dist(rng));
+							uint32_t bufToSendSize = bufToSend.size();
+
+							bufToSendSize = htonl(bufToSendSize);
+							if (!connectSocket.SendAll(&bufToSendSize, sizeof(bufToSendSize)))
+								break;
+
+							bufToSendSize = ntohl(bufToSendSize);
+							if (!connectSocket.SendAll(bufToSend.data(), bufToSendSize))
+								break;
+
+							std::cout << "Attempting to send chunk of data..." << std::endl;
+							Sleep(500);
 						}
 
 						if (connectSocket.Close())
