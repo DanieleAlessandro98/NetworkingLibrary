@@ -28,6 +28,21 @@ int main()
 					{
 						std::cout << "socket connected to the server" << std::endl;
 
+						for (int i = 0; i < 5; i++)
+						{
+							char buffer[256];
+							strcpy_s(buffer, "Hello world from client!\0");
+							if (connectSocket.SendAll(buffer, 256))
+							{
+								std::cout << "Sending data to the server..." << std::endl;
+								char buffer1[256];
+								if (connectSocket.RecvAll(buffer1, 256))
+									std::cout << buffer1 << std::endl;
+							}
+							else
+								std::cerr << "Failed to send" << std::endl;
+						}
+
 						if (connectSocket.Close())
 						{
 							std::cout << "socket closed" << std::endl;

@@ -78,4 +78,60 @@ namespace Net
 
 		return true;
 	}
+
+	bool CSocket::Send(const void* buf, const int bytesToSend, int& partialBytesSent)
+	{
+		partialBytesSent = send(m_Socket, static_cast<const char*>(buf), bytesToSend, 0);
+		if (partialBytesSent == SOCKET_ERROR)
+			return false;
+
+		return true;
+	}
+
+	bool CSocket::Recv(void* buf, int len, int& partialBytesRecv)
+	{
+		partialBytesRecv = recv(m_Socket, static_cast<char*>(buf), len, 0);
+		if (partialBytesRecv == SOCKET_ERROR)
+			return false;
+
+		return true;
+	}
+
+	bool CSocket::SendAll(const void* buf, int len)
+	{
+		int totalBytesSent = 0;
+
+		while (totalBytesSent < len)
+		{
+			const void* bufToSend = static_cast<const char*>(buf) + totalBytesSent;
+			int bytesToSend = len - totalBytesSent;
+			int partialBytesSent;
+
+			if (!Send(bufToSend, bytesToSend, partialBytesSent))
+				return false;
+
+			totalBytesSent += partialBytesSent;
+		}
+
+		return true;
+	}
+
+	bool CSocket::RecvAll(void* buf, int len)
+	{
+		int totalBytesRecv = 0;
+
+		while (totalBytesRecv < len)
+		{
+			void* bufToRecv = static_cast<char*>(buf) + totalBytesRecv;
+			int bytesToRecv = len - totalBytesRecv;
+			int partialBytesRecv;
+
+			if (!Recv(bufToRecv, bytesToRecv, partialBytesRecv))
+				return false;
+
+			totalBytesRecv += partialBytesRecv;
+		}
+
+		return true;
+	}
 }

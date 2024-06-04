@@ -33,6 +33,22 @@ int main()
 						{
 							std::cout << "new client accepted" << std::endl;
 
+							for (int i = 0; i < 5; i++)
+							{
+								char buffer[256];
+								if (newClientSocket.RecvAll(buffer, 256))
+								{
+									std::cout << buffer << std::endl;
+
+									char buffer1[256];
+									strcpy_s(buffer1, "Data received!\0");
+									if (!newClientSocket.SendAll(buffer1, 256))
+										std::cerr << "Failed to send" << std::endl;
+								}
+								else
+									std::cerr << "Failed to recv" << std::endl;
+							}
+
 							if (listenSocket.Close())
 							{
 								std::cout << "socket closed" << std::endl;
