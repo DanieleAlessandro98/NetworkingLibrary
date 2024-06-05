@@ -35,14 +35,29 @@ int main()
 
 							while (true)
 							{
-								CPacket packet;
-								if (!newClientSocket.Recv(packet))
+								PacketHeader header;
+								if (!newClientSocket.Recv(header))
 									break;
 
-								std::string str1, str2;
-								packet >> str1 >> str2;
-								std::cout << "String 1: " << str1 << std::endl;
-								std::cout << "String 2: " << str2 << std::endl;
+								switch (header)
+								{
+									case PacketHeader::HEADER_ACTION1:
+									{
+										TPacketAction1 action;
+										if (!newClientSocket.Recv(action))
+											break;
+
+										std::cout << "Receved: " << "HEADER_ACTION1" << std::endl;
+										std::cout << "numIntero: " << action.numIntero << std::endl;
+									}
+									break;
+
+									case PacketHeader::HEADER_ACTION2:
+									{
+										// ...
+									}
+									break;
+								}
 							}
 
 							if (listenSocket.Close())

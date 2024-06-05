@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <random>
+#include <Network/PacketDefinition.h>
 
 using namespace Net;
 
@@ -52,11 +53,12 @@ int main()
 
 						while (true)
 						{
-							CPacket packet;
-							packet << std::string(random_string(dist(rng))) << std::string(random_string(dist(rng)));
-
-							if (!connectSocket.Send(packet))
+							TPacketAction1 action1;
+							action1.numIntero = 5;
+							if (!connectSocket.Send(action1))
 								break;
+
+							std::cout << "action1 sended" << std::endl;
 						}
 
 						if (connectSocket.Close())

@@ -4,6 +4,7 @@
 #include "NetException.h"
 #include "NetAddress.h"
 #include "Packet.h"
+#include "PacketDefinition.h"
 
 namespace Net
 {
@@ -27,6 +28,11 @@ namespace Net
 
 			bool Send(const CPacket& packet);
 			bool Recv(CPacket& packet);
+
+			bool Recv(PacketHeader& header);
+
+			bool Send(const TPacketAction1& action1);
+			bool Recv(TPacketAction1& action1);
 
 			SOCKET GetSocket() { return m_Socket; }
 

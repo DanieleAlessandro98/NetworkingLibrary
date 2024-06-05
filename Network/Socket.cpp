@@ -154,4 +154,37 @@ namespace Net
 		packet.ResizeBuffer(packetSize);
 		return RecvAll(packet.BeginBuffer(), packetSize);
 	}
+
+	bool CSocket::Send(const TPacketAction1& action1)
+	{
+		uint16_t header = htons(static_cast<uint16_t>(action1.header));
+		if (!SendAll(&header, sizeof(header)))
+			return false;
+
+		CPacket packet;
+		packet << action1.numIntero;
+		return Send(packet);
+	}
+
+	bool CSocket::Recv(PacketHeader& header)
+	{
+		uint16_t headerRecv;
+		if (!RecvAll(&headerRecv, sizeof(headerRecv)))
+			return false;
+
+		headerRecv = ntohs(headerRecv);
+		header = static_cast<PacketHeader>(headerRecv);
+
+		return true;
+	}
+
+	bool CSocket::Recv(TPacketAction1& action1)
+	{
+		CPacket packet;
+		if (!Recv(packet))
+			return false;
+
+		packet >> action1.numIntero;
+		return true;
+	}
 }
