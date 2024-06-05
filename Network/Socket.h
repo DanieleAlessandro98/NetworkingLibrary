@@ -3,6 +3,7 @@
 #include "Definition.h"
 #include "NetException.h"
 #include "NetAddress.h"
+#include "Packet.h"
 
 namespace Net
 {
@@ -23,6 +24,9 @@ namespace Net
 			bool Recv(void* buf, int len, int& partialBytesRecv);
 			bool SendAll(const void* buf, int len);
 			bool RecvAll(void* buf, int len);
+
+			bool Send(const CPacket& packet);
+			bool Recv(CPacket& packet);
 
 			SOCKET GetSocket() { return m_Socket; }
 

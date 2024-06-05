@@ -52,19 +52,11 @@ int main()
 
 						while (true)
 						{
-							std::string bufToSend = random_string(dist(rng));
-							uint32_t bufToSendSize = bufToSend.size();
+							CPacket packet;
+							packet << std::string(random_string(dist(rng))) << std::string(random_string(dist(rng)));
 
-							bufToSendSize = htonl(bufToSendSize);
-							if (!connectSocket.SendAll(&bufToSendSize, sizeof(bufToSendSize)))
+							if (!connectSocket.Send(packet))
 								break;
-
-							bufToSendSize = ntohl(bufToSendSize);
-							if (!connectSocket.SendAll(bufToSend.data(), bufToSendSize))
-								break;
-
-							std::cout << "Attempting to send chunk of data..." << std::endl;
-							Sleep(500);
 						}
 
 						if (connectSocket.Close())

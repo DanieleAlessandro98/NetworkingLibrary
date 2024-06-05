@@ -134,4 +134,24 @@ namespace Net
 
 		return true;
 	}
+
+	bool CSocket::Send(const CPacket& packet)
+	{
+		uint32_t packetSize = htonl(packet.GetSize());
+		if (!SendAll(&packetSize, sizeof(packetSize)))
+			return false;
+
+		return SendAll(packet.GetData(), packet.GetSize());
+	}
+
+	bool CSocket::Recv(CPacket& packet)
+	{
+		uint32_t packetSize;
+		if (!RecvAll(&packetSize, sizeof(packetSize)))
+			return false;
+
+		packetSize = ntohl(packetSize);
+		packet.ResizeBuffer(packetSize);
+		return RecvAll(packet.BeginBuffer(), packetSize);
+	}
 }

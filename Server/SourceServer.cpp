@@ -35,19 +35,14 @@ int main()
 
 							while (true)
 							{
-								std::string bufToRecv;
-								uint32_t bufToRecvSize;
-
-								if (!newClientSocket.RecvAll(&bufToRecvSize, sizeof(bufToRecvSize)))
+								CPacket packet;
+								if (!newClientSocket.Recv(packet))
 									break;
 
-								bufToRecvSize = ntohl(bufToRecvSize);
-
-								bufToRecv.resize(bufToRecvSize);
-								if (!newClientSocket.RecvAll(&bufToRecv[0], bufToRecvSize))
-									break;
-
-								std::cout << "[" << bufToRecvSize << "] - " << bufToRecv << std::endl;
+								std::string str1, str2;
+								packet >> str1 >> str2;
+								std::cout << "String 1: " << str1 << std::endl;
+								std::cout << "String 2: " << str2 << std::endl;
 							}
 
 							if (listenSocket.Close())

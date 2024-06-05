@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Packet.cpp" />
     <ClCompile Include="NetAddress.cpp" />
     <ClCompile Include="NetDevice.cpp" />
     <ClCompile Include="Socket.cpp" />
@@ -154,6 +155,8 @@
     <ClInclude Include="NetAddress.h" />
     <ClInclude Include="NetDevice.h" />
     <ClInclude Include="NetException.h" />
+    <ClInclude Include="Packet.h" />
+    <ClInclude Include="PacketException.h" />
     <ClInclude Include="Socket.h" />
     <ClInclude Include="StdAfx.h" />
   </ItemGroup>
