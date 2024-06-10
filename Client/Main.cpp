@@ -17,7 +17,7 @@ int main()
 
 	if (client.Initialize("localhost", 8080))
 	{
-		while (client.IsConnected())
+		while (true)
 			client.Process();
 	}
 

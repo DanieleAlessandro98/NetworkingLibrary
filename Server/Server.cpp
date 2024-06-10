@@ -21,6 +21,9 @@ bool Server::Initialize(const char* c_szAddr, int port)
 			return false;
 		}
 
+		unsigned long val = 1;
+		ioctlsocket(listenSocket.GetSocket(), FIONBIO, &val);
+
 		if (!listenSocket.Listen(netAddress))
 		{
 			std::cerr << "Failed to listen socket" << std::endl;
@@ -39,14 +42,37 @@ bool Server::Initialize(const char* c_szAddr, int port)
 
 void Server::Process()
 {
-	CSocket newClientSocket;
+	fd_set readfds;
+	FD_ZERO(&readfds);
+	FD_SET(listenSocket.GetSocket(), &readfds);
+
+	// Set timeout (optional)
+	timeval timeout;
+	timeout.tv_sec = 1; // 1 second timeout
+	timeout.tv_usec = 0;
+
+	int result = select(0, &readfds, NULL, NULL, &timeout);
+	if (result == SOCKET_ERROR)
+	{
+		std::cerr << "select failed with error: " << WSAGetLastError() << std::endl;
+		return;
+	}
+
+	// Data is available on the listening socket
+	if (FD_ISSET(listenSocket.GetSocket(), &readfds))
+		HandleNewConnection(listenSocket);
+}
+
+void Server::HandleNewConnection(CSocket newClientSocket)
+{
 	if (!listenSocket.Accept(newClientSocket))
 	{
 		std::cerr << "Failed to accept new client" << std::endl;
 		newClientSocket.Close();
+		return;
 	}
-	else
-		std::cout << "new client accepted" << std::endl;
+
+	std::cout << "new client accepted" << std::endl;
 }
 
 //while (true)

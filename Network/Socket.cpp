@@ -73,8 +73,11 @@ namespace Net
 	bool CSocket::Connect(CNetAddress serverAddress)
 	{
 		SOCKADDR_IN addrIn = serverAddress.GetAddrIn();
-		if (connect(m_Socket, (SOCKADDR*)&addrIn, sizeof(addrIn)) != 0)
-			throw NetException("CSocket::Connect - Error at connect(): %ld\n", WSAGetLastError());
+		if (connect(m_Socket, (SOCKADDR*)&addrIn, sizeof(addrIn)) == SOCKET_ERROR)
+		{
+			if (WSAGetLastError() != WSAEWOULDBLOCK)
+				throw NetException("CSocket::Connect - Error at connect(): %ld\n", WSAGetLastError());
+		}
 
 		return true;
 	}

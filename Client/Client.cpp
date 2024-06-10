@@ -7,6 +7,7 @@ using namespace Net;
 Client::Client()
 {
 	isConnected = false;
+	m_connectLimitTime = 0;
 }
 
 bool Client::Initialize(const char* c_szAddr, int port)
@@ -26,6 +27,9 @@ bool Client::Initialize(const char* c_szAddr, int port)
 			return false;
 		}
 
+		u_long arg = 1;
+		ioctlsocket(connectSocket.GetSocket(), FIONBIO, &arg);	// Non-blocking mode
+
 		if (!connectSocket.Connect(netAddress))
 		{
 			std::cerr << "Failed to connect to the server" << std::endl;
@@ -38,23 +42,43 @@ bool Client::Initialize(const char* c_szAddr, int port)
 		return false;
 	}
 
-	isConnected = true;
+	m_connectLimitTime = time(NULL) + 3;
 	std::cout << "socket connected to the server" << std::endl;
 	return true;
 }
 
-bool Client::Process()
+void Client::Process()
 {
-	TPacketAction1 action1;
-	action1.numIntero = 5;
-	if (!connectSocket.Send(action1))
+	fd_set writefds;
+	FD_ZERO(&writefds);
+	FD_SET(connectSocket.GetSocket(), &writefds);
+
+	// Set timeout (optional)
+	timeval timeout;
+	timeout.tv_sec = 0; // 0 second timeout (immediatly)
+	timeout.tv_usec = 0;
+
+	int result = select(0, NULL, &writefds, NULL, &timeout);
+	if (result == SOCKET_ERROR)
 	{
-		isConnected = false;
-		return false;
+		std::cerr << "select failed with error: " << WSAGetLastError() << std::endl;
+		return;
 	}
 
-	std::cout << "action1 sended" << std::endl;
-	return true;
+	if (!isConnected)
+	{
+		if (FD_ISSET(connectSocket.GetSocket(), &writefds))
+		{
+			isConnected = true;
+			std::cout << "OnConnectSuccess" << std::endl;
+		}
+		else if (time(NULL) > m_connectLimitTime)
+		{
+			std::cout << "OnConnectFailed" << std::endl;
+		}
+
+		return;
+	}
 }
 
 bool Client::IsConnected()
