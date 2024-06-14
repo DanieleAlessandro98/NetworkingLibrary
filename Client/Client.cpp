@@ -50,6 +50,10 @@ bool Client::Initialize(const char* c_szAddr, int port)
 
 void Client::Process()
 {
+	fd_set readfds;
+	FD_ZERO(&readfds);
+	FD_SET(connectSocket.GetSocket(), &readfds);
+
 	fd_set writefds;
 	FD_ZERO(&writefds);
 	FD_SET(connectSocket.GetSocket(), &writefds);
@@ -59,7 +63,7 @@ void Client::Process()
 	timeout.tv_sec = 0; // 0 second timeout (immediatly)
 	timeout.tv_usec = 0;
 
-	int result = select(0, NULL, &writefds, NULL, &timeout);
+	int result = select(0, &readfds, &writefds, NULL, &timeout);
 	if (result == SOCKET_ERROR)
 	{
 		std::cerr << "select failed with error: " << WSAGetLastError() << std::endl;
@@ -94,6 +98,18 @@ void Client::Process()
 			}
 		}
 	}
+
+	if (FD_ISSET(connectSocket.GetSocket(), &readfds))
+	{
+		if (!dataStream->ProcessRecv())
+		{
+			std::cout << "OnRemoteDisconnect" << std::endl;
+			return;
+		}
+	}
+
+	OnProcessRecv();
+
 }
 
 bool Client::IsConnected()
@@ -112,4 +128,80 @@ void Client::TestSend()
 	}
 
 	std::cout << "action1 sended" << std::endl;
+}
+
+bool Client::TestRecv()
+{
+	TPacketAction1 action1Packet;
+	if (!dataStream->Recv(sizeof(action1Packet), &action1Packet))
+		return false;
+
+	std::cout << "action1 receved. numIntero = " << action1Packet.numIntero << std::endl;
+}
+
+void Client::OnProcessRecv()
+{
+	TPacketHeader header = 0;
+
+	bool ret = true;
+	while (ret)
+	{
+		if (!CheckPacket(&header))
+			break;
+
+		switch (static_cast<Net::PacketHeader>(header))
+		{
+			case PacketHeader::HEADER_ACTION1:
+					ret = TestRecv();
+					break;
+		}
+	}
+
+	if (!ret)
+		RecvErrorPacket(header);
+}
+
+bool Client::CheckPacket(Net::TPacketHeader* packetHeader)
+{
+	TPacketHeader tempHeader = 0;
+
+	if (!dataStream->Peek(sizeof(TPacketHeader), &tempHeader))
+		return false;
+
+	if (0 == tempHeader)
+	{
+		if (!dataStream->Recv(sizeof(TPacketHeader), &tempHeader))
+			return false;
+
+		while (dataStream->Peek(sizeof(TPacketHeader), &tempHeader))
+		{
+			if (0 == tempHeader)
+			{
+				if (!dataStream->Recv(sizeof(TPacketHeader), &tempHeader))
+					return false;
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		if (0 == tempHeader)
+			return false;
+	}
+
+	if (!dataStream->Peek(sizeof(TPacketAction1)))
+		return false;
+
+	if (!tempHeader)
+		return false;
+
+	*packetHeader = tempHeader;
+	return true;
+}
+
+void Client::RecvErrorPacket(int header)
+{
+	std::cerr << "Not handled this header: " << header << std::endl;
+	dataStream->ClearRecvBuffer();
 }

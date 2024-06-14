@@ -2,6 +2,7 @@
 
 #include "Network/Socket.h"
 #include <Network/DataStream.h>
+#include <Network/PacketDefinition.h>
 #include <memory>
 
 class Client
@@ -14,7 +15,12 @@ class Client
 		void Process();
 		bool IsConnected();
 
+		void OnProcessRecv();
+		bool CheckPacket(Net::TPacketHeader* header);
+		void RecvErrorPacket(int header);
+
 		void TestSend();
+		bool TestRecv();
 
 	private:
 		Net::CSocket connectSocket;

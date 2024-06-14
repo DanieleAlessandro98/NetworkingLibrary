@@ -10,7 +10,11 @@ namespace Net
 		sendBufInputPos = 0;
 		sendBufOutputPos = 0;
 
+		recvBufInputPos = 0;
+		recvBufOutputPos = 0;
+
 		SetSendBufferSize(2048);
+		SetRecvBufferSize(128 * 1024);
 	}
 
 	void CDataStream::SetSendBufferSize(int sendBufSize)
@@ -23,6 +27,18 @@ namespace Net
 
 		m_sendBuf.clear();
 		m_sendBuf.resize(sendBufSize);
+	}
+
+	void CDataStream::SetRecvBufferSize(int recvBufSize)
+	{
+		if (!m_recvBuf.empty())
+		{
+			if (m_recvBuf.size() > recvBufSize)
+				return;
+		}
+
+		m_recvBuf.clear();
+		m_recvBuf.resize(recvBufSize);
 	}
 
 	bool CDataStream::Send(int len, const void* pSrcBuf)
@@ -72,6 +88,59 @@ namespace Net
 		sendBufOutputPos = 0;
 	}
 
+	bool CDataStream::ProcessRecv()
+	{
+		int dataSize = m_recvBuf.size() - recvBufInputPos;
+		if (dataSize <= 0)
+			return true;
+
+		int recvSize = recv(connectSocket.GetSocket(), m_recvBuf.data() + recvBufInputPos, dataSize, 0);
+		if (recvSize <= 0)
+		{
+			if (recvSize == 0 || WSAGetLastError() != WSAEWOULDBLOCK)
+				return false;
+		}
+
+		recvBufInputPos += recvSize;
+	}
+
+	bool CDataStream::Peek(int len, void* pDestBuf)
+	{
+		return Peek(len, (char*)pDestBuf);
+	}
+
+	bool CDataStream::Peek(int size, char* pDestBuf)
+	{
+		if (GetRecvBufferSize() < size)
+			return false;
+
+		memcpy(pDestBuf, m_recvBuf.data() + recvBufOutputPos, size);
+		return true;
+	}
+
+	bool CDataStream::Recv(int len, void* pDestBuf)
+	{
+		return Recv(len, (char*)pDestBuf);
+	}
+
+	bool CDataStream::Recv(int size, char* pDestBuf)
+	{
+		if (!Peek(size, pDestBuf))
+			return false;
+
+		recvBufOutputPos += size;
+		return true;
+	}
+
+	bool CDataStream::Peek(int size)
+	{
+		if (GetRecvBufferSize() < size)
+			return false;
+
+		return true;
+	}
+
+
 	int CDataStream::GetSendBufInputPos() const
 	{
 		return sendBufInputPos;
@@ -85,5 +154,15 @@ namespace Net
 	int CDataStream::GetSendBufferSize()
 	{
 		return sendBufInputPos - sendBufOutputPos;
+	}
+
+	int CDataStream::GetRecvBufferSize()
+	{
+		return recvBufInputPos - recvBufOutputPos;
+	}
+
+	void CDataStream::ClearRecvBuffer()
+	{
+		recvBufInputPos = recvBufOutputPos = 0;
 	}
 }

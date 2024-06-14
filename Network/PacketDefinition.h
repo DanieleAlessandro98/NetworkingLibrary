@@ -5,7 +5,9 @@
 
 namespace Net
 {
-    enum class PacketHeader : uint16_t
+    typedef uint8_t TPacketHeader;
+
+    enum class PacketHeader : TPacketHeader
     {
         HEADER_ACTION1,
         HEADER_ACTION2
