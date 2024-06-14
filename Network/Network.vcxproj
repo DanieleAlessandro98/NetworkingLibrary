@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DataStream.cpp" />
     <ClCompile Include="Packet.cpp" />
     <ClCompile Include="NetAddress.cpp" />
     <ClCompile Include="NetDevice.cpp" />
@@ -151,6 +152,7 @@
     <ClCompile Include="StdAfx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DataStream.h" />
     <ClInclude Include="Definition.h" />
     <ClInclude Include="NetAddress.h" />
     <ClInclude Include="NetDevice.h" />

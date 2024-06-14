@@ -15,11 +15,22 @@ int main()
 		return 0;
 	}
 
-	if (client.Initialize("localhost", 8080))
-	{
-		while (true)
-			client.Process();
-	}
+    if (client.Initialize("localhost", 8080))
+    {
+        while (true)
+        {
+            client.Process();
+
+            if (client.IsConnected())
+            {
+                std::string input;
+                std::getline(std::cin, input);
+
+                if (input == "ok")
+                    client.TestSend();
+            }
+        }
+    }
 
 	netDevice.Destroy();
 
