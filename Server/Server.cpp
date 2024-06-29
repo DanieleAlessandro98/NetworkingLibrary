@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Server.h"
 #include <iostream>
+#include <Network/PacketDefinition.h>
 
 using namespace Net;
 
@@ -36,42 +37,80 @@ bool Server::Initialize(const char* c_szAddr, int port)
 		return false;
 	}
 
+	watcher = std::make_unique<SocketWatcher>(4096);
+	watcher->add_fd(listenSocket.GetSocket(), NULL, FDW_READ, false);
+
 	std::cout << "Socket Listening..." << std::endl;
 	return true;
 }
 
 void Server::Process()
 {
-	fd_set readfds;
-	FD_ZERO(&readfds);
-	FD_SET(listenSocket.GetSocket(), &readfds);
-
-	// Set timeout (optional)
-	timeval timeout;
-	timeout.tv_sec = 1; // 1 second timeout
-	timeout.tv_usec = 0;
-
-	int result = select(0, &readfds, NULL, NULL, &timeout);
-	if (result == SOCKET_ERROR)
-	{
-		std::cerr << "select failed with error: " << WSAGetLastError() << std::endl;
+	int num_events = watcher->monitor(0);
+	if (num_events < 0)
 		return;
-	}
 
-	// Data is available on the listening socket
-	if (FD_ISSET(listenSocket.GetSocket(), &readfds))
-		HandleNewConnection(listenSocket);
+	std::shared_ptr<CSocket> d;
+
+	for (int event_idx = 0; event_idx < num_events; ++event_idx)
+	{
+		d = watcher->get_client_data(event_idx);
+		if (!d)
+		{
+			if (FDW_READ == watcher->has_event(listenSocket.GetSocket(), event_idx))
+			{
+				HandleNewConnection();
+				watcher->clear_event(listenSocket.GetSocket(), event_idx);
+			}
+
+			continue;
+		}
+
+		const auto dataStream = d->GetDataStream();
+		if (!dataStream)
+			continue;
+
+		int iRet = watcher->has_event(d->GetSocket(), event_idx);
+		switch (iRet)
+		{
+			case FDW_READ:
+			{
+				if (!dataStream->ProcessRecv(d->GetSocket()))
+					std::cerr << "SetPhase(PHASE_CLOSE)" << std::endl;
+			}
+			break;
+
+			case FDW_WRITE:
+			{
+				if (!dataStream->ProcessSend(d->GetSocket()))
+					std::cerr << "SetPhase(PHASE_CLOSE)" << std::endl;
+			}
+			break;
+
+			case FDW_EOF:
+			{
+				std::cerr << "SetPhase(PHASE_CLOSE)" << std::endl;
+			}
+			break;
+
+			default:
+				printf("watcher->has_event returned unknown %d", iRet);
+				break;
+		}
+	}
 }
 
-void Server::HandleNewConnection(CSocket newClientSocket)
+void Server::HandleNewConnection()
 {
-	if (!listenSocket.Accept(newClientSocket))
+	auto newClientSocket = std::make_shared<CSocket>();
+	if (!listenSocket.Accept(*newClientSocket))
 	{
 		std::cerr << "Failed to accept new client" << std::endl;
-		newClientSocket.Close();
+		newClientSocket->Close();
 		return;
 	}
 
+	watcher->add_fd(newClientSocket->GetSocket(), newClientSocket, FDW_READ, false);
 	std::cout << "new client accepted" << std::endl;
 }
 

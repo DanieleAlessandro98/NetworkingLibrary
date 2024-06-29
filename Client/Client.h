@@ -26,5 +26,4 @@ class Client
 		Net::CSocket connectSocket;
 		bool isConnected;
 		time_t	m_connectLimitTime;
-		std::unique_ptr<Net::CDataStream> dataStream;
 };

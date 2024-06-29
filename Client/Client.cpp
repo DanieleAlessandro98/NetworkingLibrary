@@ -42,7 +42,6 @@ bool Client::Initialize(const char* c_szAddr, int port)
 		return false;
 	}
 
-	dataStream = std::make_unique< CDataStream>(connectSocket);
 	m_connectLimitTime = time(NULL) + 3;
 	std::cout << "socket connected to the server" << std::endl;
 	return true;
@@ -85,9 +84,13 @@ void Client::Process()
 		return;
 	}
 
+	const auto dataStream = connectSocket.GetDataStream();
+	if (!dataStream)
+		return;
+
 	if (FD_ISSET(connectSocket.GetSocket(), &writefds) && (dataStream->GetSendBufInputPos() > dataStream->GetSendBufOutpusPos()))
 	{
-		if (!dataStream->ProcessSend())
+		if (!dataStream->ProcessSend(connectSocket.GetSocket()))
 		{
 			int error = WSAGetLastError();
 
@@ -101,7 +104,7 @@ void Client::Process()
 
 	if (FD_ISSET(connectSocket.GetSocket(), &readfds))
 	{
-		if (!dataStream->ProcessRecv())
+		if (!dataStream->ProcessRecv(connectSocket.GetSocket()))
 		{
 			std::cout << "OnRemoteDisconnect" << std::endl;
 			return;
@@ -109,7 +112,6 @@ void Client::Process()
 	}
 
 	OnProcessRecv();
-
 }
 
 bool Client::IsConnected()
@@ -119,6 +121,10 @@ bool Client::IsConnected()
 
 void Client::TestSend()
 {
+	const auto dataStream = connectSocket.GetDataStream();
+	if (!dataStream)
+		return;
+
 	TPacketAction1 action1;
 	action1.numIntero = 5;
 	if (!dataStream->Send(sizeof(action1), &action1))
@@ -132,11 +138,16 @@ void Client::TestSend()
 
 bool Client::TestRecv()
 {
+	const auto dataStream = connectSocket.GetDataStream();
+	if (!dataStream)
+		return false;
+
 	TPacketAction1 action1Packet;
 	if (!dataStream->Recv(sizeof(action1Packet), &action1Packet))
 		return false;
 
 	std::cout << "action1 receved. numIntero = " << action1Packet.numIntero << std::endl;
+	return true;
 }
 
 void Client::OnProcessRecv()
@@ -163,6 +174,10 @@ void Client::OnProcessRecv()
 
 bool Client::CheckPacket(Net::TPacketHeader* packetHeader)
 {
+	const auto dataStream = connectSocket.GetDataStream();
+	if (!dataStream)
+		return false;
+
 	TPacketHeader tempHeader = 0;
 
 	if (!dataStream->Peek(sizeof(TPacketHeader), &tempHeader))
@@ -202,6 +217,10 @@ bool Client::CheckPacket(Net::TPacketHeader* packetHeader)
 
 void Client::RecvErrorPacket(int header)
 {
+	const auto dataStream = connectSocket.GetDataStream();
+	if (!dataStream)
+		return;
+
 	std::cerr << "Not handled this header: " << header << std::endl;
 	dataStream->ClearRecvBuffer();
 }

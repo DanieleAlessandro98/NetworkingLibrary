@@ -3,10 +3,8 @@
 
 namespace Net
 {
-	CDataStream::CDataStream(CSocket connectSocket)
+	CDataStream::CDataStream()
 	{
-		this->connectSocket = connectSocket;
-
 		sendBufInputPos = 0;
 		sendBufOutputPos = 0;
 
@@ -58,13 +56,13 @@ namespace Net
 		return true;
 	}
 
-	bool CDataStream::ProcessSend()
+	bool CDataStream::ProcessSend(SOCKET socket)
 	{
 		int dataSize = GetSendBufferSize();
 		if (dataSize <= 0)
 			return true;
 
-		int sendSize = send(connectSocket.GetSocket(), m_sendBuf.data() + sendBufOutputPos, dataSize, 0);
+		int sendSize = send(socket, m_sendBuf.data() + sendBufOutputPos, dataSize, 0);
 		if (sendSize < 0)
 			return false;
 
@@ -88,13 +86,13 @@ namespace Net
 		sendBufOutputPos = 0;
 	}
 
-	bool CDataStream::ProcessRecv()
+	bool CDataStream::ProcessRecv(SOCKET socket)
 	{
 		int dataSize = m_recvBuf.size() - recvBufInputPos;
 		if (dataSize <= 0)
 			return true;
 
-		int recvSize = recv(connectSocket.GetSocket(), m_recvBuf.data() + recvBufInputPos, dataSize, 0);
+		int recvSize = recv(socket, m_recvBuf.data() + recvBufInputPos, dataSize, 0);
 		if (recvSize <= 0)
 		{
 			if (recvSize == 0 || WSAGetLastError() != WSAEWOULDBLOCK)
@@ -102,6 +100,7 @@ namespace Net
 		}
 
 		recvBufInputPos += recvSize;
+		return true;
 	}
 
 	bool CDataStream::Peek(int len, void* pDestBuf)

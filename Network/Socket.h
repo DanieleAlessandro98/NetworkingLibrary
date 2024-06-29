@@ -1,10 +1,10 @@
 #pragma once
 
+#include <memory>
 #include "Definition.h"
 #include "NetException.h"
 #include "NetAddress.h"
-#include "Packet.h"
-#include "PacketDefinition.h"
+#include "DataStream.h"
 
 namespace Net
 {
@@ -21,22 +21,12 @@ namespace Net
 			bool Listen(CNetAddress address, int backlog = 5);
 			bool Accept(CSocket& clientSocket);
 			bool Connect(CNetAddress serverAddress);
-			bool Send(const void* buf, const int bytesToSend, int& partialBytesSent);
-			bool Recv(void* buf, int len, int& partialBytesRecv);
-			bool SendAll(const void* buf, int len);
-			bool RecvAll(void* buf, int len);
-
-			bool Send(const CPacket& packet);
-			bool Recv(CPacket& packet);
-
-			bool Recv(PacketHeader& header);
-
-			bool Send(const TPacketAction1& action1);
-			bool Recv(TPacketAction1& action1);
 
 			SOCKET GetSocket() { return m_Socket; }
+			std::shared_ptr<CDataStream> GetDataStream() { return dataStream; }
 
 		private:
 			SOCKET m_Socket;
+			std::shared_ptr<CDataStream> dataStream;
 	};
 }

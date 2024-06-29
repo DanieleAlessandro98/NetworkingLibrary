@@ -149,6 +149,7 @@
     <ClCompile Include="NetAddress.cpp" />
     <ClCompile Include="NetDevice.cpp" />
     <ClCompile Include="Socket.cpp" />
+    <ClCompile Include="SocketWatcher.cpp" />
     <ClCompile Include="StdAfx.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +162,7 @@
     <ClInclude Include="PacketDefinition.h" />
     <ClInclude Include="PacketException.h" />
     <ClInclude Include="Socket.h" />
+    <ClInclude Include="SocketWatcher.h" />
     <ClInclude Include="StdAfx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

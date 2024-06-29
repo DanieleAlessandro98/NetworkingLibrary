@@ -1,14 +1,14 @@
 #pragma once
 
 #include <vector>
-#include "Socket.h"
+#include "Definition.h"
 
 namespace Net
 {
 	class CDataStream
 	{
 		public:
-			CDataStream(CSocket connectSocket);
+			CDataStream();
 			~CDataStream() = default;
 
 			void SetSendBufferSize(int sendBufSize);
@@ -17,12 +17,12 @@ namespace Net
 			// Send funcs
 			bool Send(int len, const void* pSrcBuf);
 			bool Send(int size, const char* pSrcBuf);
-			bool ProcessSend();
+			bool ProcessSend(SOCKET socket);
 			void PopSendBuffer();
 
 
 			// Recv funcs
-			bool ProcessRecv();
+			bool ProcessRecv(SOCKET socket);
 			bool Peek(int len, void* pDestBuf);
 			bool Peek(int size, char* pDestBuf);
 			bool Recv(int len, void* pDestBuf);
@@ -41,8 +41,6 @@ namespace Net
 			int GetRecvBufferSize();
 
 		private:
-			CSocket connectSocket;
-
 			std::vector<char> m_sendBuf;
 			int sendBufInputPos;
 			int sendBufOutputPos;
