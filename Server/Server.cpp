@@ -75,7 +75,7 @@ void Server::Process()
 		{
 			case FDW_READ:
 			{
-				if (!dataStream->ProcessRecv(d->GetSocket()))
+				if (!ProcessRecv(d))
 					std::cerr << "SetPhase(PHASE_CLOSE)" << std::endl;
 			}
 			break;
@@ -114,38 +114,114 @@ void Server::HandleNewConnection()
 	std::cout << "new client accepted" << std::endl;
 }
 
-//while (true)
-//{
-//	PacketHeader header;
-//	if (!newClientSocket.Recv(header))
-//		break;
-//
-//	switch (header)
-//	{
-//	case PacketHeader::HEADER_ACTION1:
-//	{
-//		TPacketAction1 action;
-//		if (!newClientSocket.Recv(action))
-//			break;
-//
-//		std::cout << "Receved: " << "HEADER_ACTION1" << std::endl;
-//		std::cout << "numIntero: " << action.numIntero << std::endl;
-//	}
-//	break;
-//
-//	case PacketHeader::HEADER_ACTION2:
-//	{
-//		// ...
-//	}
-//	break;
-//	}
-//}
-//
-//if (listenSocket.Close())
-//{
-//	std::cout << "socket closed" << std::endl;
-//}
-//else
-//{
-//	std::cerr << "Failed to close socket" << std::endl;
-//}
+bool Server::ProcessRecv(std::shared_ptr<CSocket> clientSocket)
+{
+	const auto dataStream = clientSocket->GetDataStream();
+	if (!dataStream)
+		return false;
+
+	if (!dataStream->ProcessRecv(clientSocket->GetSocket()))
+	{
+		std::cout << "Client disconnected" << std::endl;
+		watcher->remove_fd(clientSocket->GetSocket());
+		return false;
+	}
+
+	return OnProcessRecv(clientSocket);
+}
+
+bool Server::OnProcessRecv(std::shared_ptr<CSocket> clientSocket)
+{
+	TPacketHeader header = 0;
+
+	bool ret = true;
+	while (ret)
+	{
+		if (!CheckPacket(clientSocket, &header))
+			break;
+
+		switch (static_cast<Net::PacketHeader>(header))
+		{
+			case PacketHeader::HEADER_ACTION1:
+				ret = TestRecv(clientSocket);
+				break;
+
+			default:
+				std::cerr << "Unknown packet header: " << header << std::endl;
+				ret = false;
+				break;
+		}
+	}
+
+	if (!ret)
+		RecvErrorPacket(clientSocket, header);
+
+	return ret;
+}
+
+bool Server::TestRecv(std::shared_ptr<CSocket> clientSocket)
+{
+	const auto dataStream = clientSocket->GetDataStream();
+	if (!dataStream)
+		return false;
+
+	TPacketAction1 action1Packet;
+	if (!dataStream->Recv(sizeof(action1Packet), &action1Packet))
+		return false;
+
+	std::cout << "action1 receved. numIntero = " << action1Packet.numIntero << std::endl;
+	return true;
+}
+
+bool Server::CheckPacket(std::shared_ptr<CSocket> clientSocket, TPacketHeader* packetHeader)
+{
+	const auto dataStream = clientSocket->GetDataStream();
+	if (!dataStream)
+		return false;
+
+	TPacketHeader tempHeader = 0;
+
+	if (!dataStream->Peek(sizeof(TPacketHeader), &tempHeader))
+		return false;
+
+	if (0 == tempHeader)
+	{
+		if (!dataStream->Recv(sizeof(TPacketHeader), &tempHeader))
+			return false;
+
+		while (dataStream->Peek(sizeof(TPacketHeader), &tempHeader))
+		{
+			if (0 == tempHeader)
+			{
+				if (!dataStream->Recv(sizeof(TPacketHeader), &tempHeader))
+					return false;
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		if (0 == tempHeader)
+			return false;
+	}
+
+	if (!dataStream->Peek(sizeof(TPacketAction1)))
+		return false;
+
+	if (!tempHeader)
+		return false;
+
+	*packetHeader = tempHeader;
+	return true;
+}
+
+void Server::RecvErrorPacket(std::shared_ptr<CSocket> clientSocket, int header)
+{
+	const auto dataStream = clientSocket->GetDataStream();
+	if (!dataStream)
+		return;
+
+	std::cerr << "Not handled this header: " << header << std::endl;
+	dataStream->ClearRecvBuffer();
+}

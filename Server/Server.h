@@ -2,6 +2,7 @@
 
 #include "Network/Socket.h"
 #include "Network/SocketWatcher.h"
+#include <Network/PacketDefinition.h>
 #include <memory>
 
 class Server
@@ -10,6 +11,13 @@ class Server
 		bool Initialize(const char* c_szAddr, int port);
 		void Process();
 		void HandleNewConnection();
+
+		bool ProcessRecv(std::shared_ptr<Net::CSocket> clientSocket);
+		bool OnProcessRecv(std::shared_ptr<Net::CSocket> clientSocket);
+		bool CheckPacket(std::shared_ptr<Net::CSocket> clientSocket, Net::TPacketHeader * packetHeader);
+		void RecvErrorPacket(std::shared_ptr<Net::CSocket> clientSocket, int header);
+
+		bool TestRecv(std::shared_ptr<Net::CSocket> clientSocket);
 
 	private:
 		Net::CSocket listenSocket;
