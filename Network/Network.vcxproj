@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AbstractPacketHeaderMap.cpp" />
     <ClCompile Include="DataStream.cpp" />
     <ClCompile Include="Packet.cpp" />
     <ClCompile Include="NetAddress.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="StdAfx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AbstractPacketHeaderMap.h" />
     <ClInclude Include="DataStream.h" />
     <ClInclude Include="Definition.h" />
     <ClInclude Include="NetAddress.h" />

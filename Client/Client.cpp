@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Client.h"
+#include "ClientPacketHeaderMap.h"
 #include <iostream>
 
 using namespace Net;
@@ -125,7 +126,7 @@ void Client::TestSend()
 	if (!dataStream)
 		return;
 
-	TPacketAction1 action1;
+	TPacketCGAction1 action1;
 	action1.numIntero = 5;
 	if (!dataStream->Send(sizeof(action1), &action1))
 	{
@@ -142,11 +143,11 @@ bool Client::TestRecv()
 	if (!dataStream)
 		return false;
 
-	TPacketAction1 action1Packet;
-	if (!dataStream->Recv(sizeof(action1Packet), &action1Packet))
+	TPacketGCServerResponse responsePacket;
+	if (!dataStream->Recv(sizeof(responsePacket), &responsePacket))
 		return false;
 
-	std::cout << "action1 receved. numIntero = " << action1Packet.numIntero << std::endl;
+	std::cout << "response receved. message: " << responsePacket.response << std::endl;
 	return true;
 }
 
@@ -160,9 +161,9 @@ void Client::OnProcessRecv()
 		if (!CheckPacket(&header))
 			break;
 
-		switch (static_cast<Net::PacketHeader>(header))
+		switch (static_cast<Net::PacketGCHeader>(header))
 		{
-			case PacketHeader::HEADER_ACTION1:
+			case PacketGCHeader::HEADER_GC_SERVER_RESPONSE:
 					ret = TestRecv();
 					break;
 		}
@@ -177,6 +178,8 @@ bool Client::CheckPacket(Net::TPacketHeader* packetHeader)
 	const auto dataStream = connectSocket.GetDataStream();
 	if (!dataStream)
 		return false;
+
+	static CClientPacketHeaderMap packetHeaderMap;
 
 	TPacketHeader tempHeader = 0;
 
@@ -205,7 +208,15 @@ bool Client::CheckPacket(Net::TPacketHeader* packetHeader)
 			return false;
 	}
 
-	if (!dataStream->Peek(sizeof(TPacketAction1)))
+	CAbstractPacketHeaderMap::TPacketType packetType;
+	if (!packetHeaderMap.Get(tempHeader, &packetType))
+	{
+		std::cerr << "Unknown packet header:" << std::endl;
+		dataStream->ClearRecvBuffer();
+		return false;
+	}
+
+	if (!dataStream->Peek(packetType.iPacketSize))
 		return false;
 
 	if (!tempHeader)

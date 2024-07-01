@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Server.h"
+#include "ServerPacketHeaderMap.h"
 #include <iostream>
 #include <Network/PacketDefinition.h>
 
@@ -143,9 +144,9 @@ bool Server::OnProcessRecv(std::shared_ptr<CSocket> clientSocket)
 		if (!CheckPacket(clientSocket, &header))
 			break;
 
-		switch (static_cast<Net::PacketHeader>(header))
+		switch (static_cast<Net::PacketCGHeader>(header))
 		{
-			case PacketHeader::HEADER_ACTION1:
+			case PacketCGHeader::HEADER_CG_ACTION1:
 				ret = TestRecv(clientSocket);
 				TestSend(clientSocket);
 				break;
@@ -169,7 +170,7 @@ bool Server::TestRecv(std::shared_ptr<CSocket> clientSocket)
 	if (!dataStream)
 		return false;
 
-	TPacketAction1 action1Packet;
+	TPacketCGAction1 action1Packet;
 	if (!dataStream->Recv(sizeof(action1Packet), &action1Packet))
 		return false;
 
@@ -183,12 +184,14 @@ bool Server::TestSend(std::shared_ptr<CSocket> clientSocket)
 	if (!dataStream)
 		return false;
 
-	TPacketAction1 action1Packet;
-	action1Packet.numIntero = 22;
-	if (!dataStream->Send(sizeof(action1Packet), &action1Packet))
+	TPacketGCServerResponse responsePacket;
+	strncpy(responsePacket.response, "blabla message server blabla", sizeof(responsePacket.response) - 1);
+	responsePacket.response[sizeof(responsePacket.response) - 1] = '\0';
+
+	if (!dataStream->Send(sizeof(responsePacket), &responsePacket))
 		return false;
 
-	std::cout << "action1 sended." << std::endl;
+	std::cout << "Response sended." << std::endl;
 
 	watcher->add_fd(clientSocket->GetSocket(), clientSocket, FDW_WRITE, true);
 	return true;
@@ -201,6 +204,8 @@ bool Server::CheckPacket(std::shared_ptr<CSocket> clientSocket, TPacketHeader* p
 		return false;
 
 	TPacketHeader tempHeader = 0;
+
+	static CServerPacketHeaderMap packetHeaderMap;
 
 	if (!dataStream->Peek(sizeof(TPacketHeader), &tempHeader))
 		return false;
@@ -227,7 +232,15 @@ bool Server::CheckPacket(std::shared_ptr<CSocket> clientSocket, TPacketHeader* p
 			return false;
 	}
 
-	if (!dataStream->Peek(sizeof(TPacketAction1)))
+	CAbstractPacketHeaderMap::TPacketType packetType;
+	if (!packetHeaderMap.Get(tempHeader, &packetType))
+	{
+		std::cerr << "Unknown packet header:" << std::endl;
+		dataStream->ClearRecvBuffer();
+		return false;
+	}
+
+	if (!dataStream->Peek(packetType.iPacketSize))
 		return false;
 
 	if (!tempHeader)

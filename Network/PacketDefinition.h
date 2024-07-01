@@ -7,21 +7,32 @@ namespace Net
 {
     typedef uint8_t TPacketHeader;
 
-    enum class PacketHeader : TPacketHeader
+    enum class PacketCGHeader : TPacketHeader
     {
-        HEADER_ACTION1 = 89,
-        HEADER_ACTION2 = 99,
+        HEADER_CG_ACTION1 = 1,
+        HEADER_CG_ACTION2 = 2,
     };
 
-    struct TPacketAction1
+    enum class PacketGCHeader : TPacketHeader
     {
-        PacketHeader header = PacketHeader::HEADER_ACTION1;
+        HEADER_GC_SERVER_RESPONSE = 10,
+    };
+
+    struct TPacketCGAction1
+    {
+        PacketCGHeader header = PacketCGHeader::HEADER_CG_ACTION1;
         uint32_t numIntero;
     };
 
-    struct TPacketAction2
+    struct TPacketCGAction2
     {
-        PacketHeader header = PacketHeader::HEADER_ACTION2;
+        PacketCGHeader header = PacketCGHeader::HEADER_CG_ACTION2;
         uint32_t numIntero;
+    };
+
+    struct TPacketGCServerResponse
+    {
+        PacketGCHeader header = PacketGCHeader::HEADER_GC_SERVER_RESPONSE;
+        char response[50];
     };
 }
