@@ -9,8 +9,8 @@ namespace Net
 
     enum class PacketHeader : TPacketHeader
     {
-        HEADER_ACTION1,
-        HEADER_ACTION2
+        HEADER_ACTION1 = 89,
+        HEADER_ACTION2 = 99,
     };
 
     struct TPacketAction1
