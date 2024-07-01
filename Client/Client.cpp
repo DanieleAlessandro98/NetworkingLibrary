@@ -21,7 +21,7 @@ bool Client::Initialize(const char* c_szAddr, int port)
 		}
 
 		CNetAddress netAddress;
-		if (!netAddress.Set("localhost", 8080))
+		if (!netAddress.Set(c_szAddr, port))
 		{
 			std::cerr << "Failed to set address" << std::endl;
 			return false;
