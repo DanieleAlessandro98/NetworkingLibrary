@@ -24,11 +24,11 @@ namespace Net
             void add_fd(int fd, std::shared_ptr<CSocket> client_data, int events, int oneshot);
             void remove_fd(int fd);
             int monitor(struct timeval* timeout);
-            bool is_ready(int fd) const;
+            int get_ready_flags(int fd) const;
             std::shared_ptr<CSocket> get_client_data(unsigned int event_index) const;
             int get_fd_from_index(unsigned int event_index) const;
             void clear_event(int fd, unsigned int event_idx);
-            bool has_event(int fd, unsigned int event_idx) const;
+            int get_event_status(int fd, unsigned int event_idx) const;
             int get_buffer_size(int fd) const;
 
         private:

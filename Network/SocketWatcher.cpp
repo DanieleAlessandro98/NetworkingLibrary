@@ -91,25 +91,25 @@ namespace Net
 
         for (i = 0; i < num_monitored_fds_; ++i)
         {
-            if (is_ready(monitored_fds_[i]))
+            if (get_ready_flags(monitored_fds_[i]))
                 ready_fd_indices_[event_idx++] = i;
         }
 
         return event_idx;
     }
 
-    bool SocketWatcher::is_ready(int fd) const
+    int SocketWatcher::get_ready_flags(int fd) const
     {
         int idx = find_fd_index(fd);
         if (idx < 0)
-            return false;
+            return 0;
 
-        bool result = false;
+        int result = 0;
         if ((fd_event_flags_[idx] & FDW_READ) && FD_ISSET(fd, &active_read_fds_))
-            result = true;
+            result |= FDW_READ;
 
         if ((fd_event_flags_[idx] & FDW_WRITE) && FD_ISSET(fd, &active_write_fds_))
-            result = true;
+            result |= FDW_WRITE;
 
         return result;
     }
@@ -155,20 +155,28 @@ namespace Net
         FD_CLR(fd, &active_write_fds_);
     }
 
-    bool SocketWatcher::has_event(int fd, unsigned int event_idx) const
+    int SocketWatcher::get_event_status(int fd, unsigned int event_idx) const
     {
         if (event_idx >= ready_fd_indices_.size())
-            return false;
+            return 0;
 
         int idx = ready_fd_indices_[event_idx];
         if (idx < 0 || max_fds_ <= idx)
-            return false;
+            return 0;
 
         int rfd = monitored_fds_[idx];
         if (fd != rfd)
-            return false;
+            return 0;
 
-        return is_ready(fd);
+        int result = get_ready_flags(fd);
+        if (result & FDW_READ)
+            return FDW_READ;
+
+        if (result & FDW_WRITE)
+            return FDW_WRITE;
+
+        return 0;
+
     }
 
     int SocketWatcher::get_buffer_size(int fd) const

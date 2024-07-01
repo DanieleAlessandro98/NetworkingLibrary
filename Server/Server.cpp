@@ -57,7 +57,7 @@ void Server::Process()
 		d = watcher->get_client_data(event_idx);
 		if (!d)
 		{
-			if (FDW_READ == watcher->has_event(listenSocket.GetSocket(), event_idx))
+			if (FDW_READ == watcher->get_event_status(listenSocket.GetSocket(), event_idx))
 			{
 				HandleNewConnection();
 				watcher->clear_event(listenSocket.GetSocket(), event_idx);
@@ -70,7 +70,7 @@ void Server::Process()
 		if (!dataStream)
 			continue;
 
-		int iRet = watcher->has_event(d->GetSocket(), event_idx);
+		int iRet = watcher->get_event_status(d->GetSocket(), event_idx);
 		switch (iRet)
 		{
 			case FDW_READ:
@@ -94,7 +94,7 @@ void Server::Process()
 			break;
 
 			default:
-				printf("watcher->has_event returned unknown %d", iRet);
+				printf("watcher->get_event_status returned unknown %d", iRet);
 				break;
 		}
 	}
