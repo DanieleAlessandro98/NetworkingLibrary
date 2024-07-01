@@ -83,7 +83,10 @@ void Server::Process()
 			case FDW_WRITE:
 			{
 				if (!dataStream->ProcessSend(d->GetSocket()))
-					std::cerr << "SetPhase(PHASE_CLOSE)" << std::endl;
+				{
+					std::cerr << "Client disconnected" << std::endl;
+					watcher->remove_fd(d->GetSocket());
+				}
 			}
 			break;
 
@@ -144,6 +147,7 @@ bool Server::OnProcessRecv(std::shared_ptr<CSocket> clientSocket)
 		{
 			case PacketHeader::HEADER_ACTION1:
 				ret = TestRecv(clientSocket);
+				TestSend(clientSocket);
 				break;
 
 			default:
@@ -170,6 +174,23 @@ bool Server::TestRecv(std::shared_ptr<CSocket> clientSocket)
 		return false;
 
 	std::cout << "action1 receved. numIntero = " << action1Packet.numIntero << std::endl;
+	return true;
+}
+
+bool Server::TestSend(std::shared_ptr<CSocket> clientSocket)
+{
+	const auto dataStream = clientSocket->GetDataStream();
+	if (!dataStream)
+		return false;
+
+	TPacketAction1 action1Packet;
+	action1Packet.numIntero = 22;
+	if (!dataStream->Send(sizeof(action1Packet), &action1Packet))
+		return false;
+
+	std::cout << "action1 sended." << std::endl;
+
+	watcher->add_fd(clientSocket->GetSocket(), clientSocket, FDW_WRITE, true);
 	return true;
 }
 

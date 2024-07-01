@@ -18,6 +18,7 @@ class Server
 		void RecvErrorPacket(std::shared_ptr<Net::CSocket> clientSocket, int header);
 
 		bool TestRecv(std::shared_ptr<Net::CSocket> clientSocket);
+		bool TestSend(std::shared_ptr<Net::CSocket> clientSocket);
 
 	private:
 		Net::CSocket listenSocket;
