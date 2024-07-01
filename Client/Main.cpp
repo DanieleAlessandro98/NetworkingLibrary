@@ -2,18 +2,19 @@
 #include <iostream>
 #include <Network/NetDevice.h>
 #include "Client.h"
+#include <conio.h>
 
 int main()
 {
-	Client client;
+    Client client;
 
-	Net::CNetDevice netDevice;
-	if (!netDevice.Create())
-	{
-		std::cerr << "Failed to create winsock" << std::endl;
-		system("pause");
-		return 0;
-	}
+    Net::CNetDevice netDevice;
+    if (!netDevice.Create())
+    {
+        std::cerr << "Failed to create winsock" << std::endl;
+        system("pause");
+        return 0;
+    }
 
     if (client.Initialize("localhost", 8080))
     {
@@ -21,10 +22,19 @@ int main()
         {
             client.Process();
 
-            if (client.IsConnected())
+            if (client.IsConnected() && _kbhit())
             {
                 std::string input;
-                std::getline(std::cin, input);
+
+                char ch = _getch();
+                while (ch != '\r')
+                {
+                    input += ch;
+                    std::cout << ch;
+                    ch = _getch();
+                }
+
+                std::cout << std::endl;
 
                 if (input == "ok")
                     client.TestSend();
@@ -32,8 +42,8 @@ int main()
         }
     }
 
-	netDevice.Destroy();
+    netDevice.Destroy();
 
-	system("pause");
-	return 0;
+    system("pause");
+    return 0;
 }
