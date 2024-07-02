@@ -10,12 +10,14 @@ namespace Net
 		public:
 			typedef struct SPacketType
 			{
+				int iPacketSize;
+				bool isDynamicSizePacket;
+
 				SPacketType(int iSize = 0, bool bFlag = false)
 				{
 					iPacketSize = iSize;
+					isDynamicSizePacket = bFlag;
 				}
-
-				int iPacketSize;
 			} TPacketType;
 
 		public:

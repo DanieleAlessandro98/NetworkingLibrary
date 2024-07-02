@@ -21,8 +21,11 @@ class Client
 
 		void TestSend();
 		bool TestRecv();
+		void TestSendAction3();
 
 	private:
+		int __GetRandNumber();
+
 		Net::CSocket connectSocket;
 		bool isConnected;
 		time_t	m_connectLimitTime;

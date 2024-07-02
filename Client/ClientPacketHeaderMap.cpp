@@ -11,5 +11,11 @@ CClientPacketHeaderMap::CClientPacketHeaderMap()
 
 void CClientPacketHeaderMap::__LoadPacketHeaders()
 {
-    Set(PacketGCHeader::HEADER_GC_SERVER_RESPONSE, CAbstractPacketHeaderMap::TPacketType(sizeof(TPacketGCServerResponse)));
+	enum
+	{
+		STATIC_SIZE_PACKET = false,
+		DYNAMIC_SIZE_PACKET = true,
+	};
+
+    Set(PacketGCHeader::HEADER_GC_SERVER_RESPONSE, CAbstractPacketHeaderMap::TPacketType(sizeof(TPacketGCServerResponse), DYNAMIC_SIZE_PACKET));
 }

@@ -151,6 +151,10 @@ bool Server::OnProcessRecv(std::shared_ptr<CSocket> clientSocket)
 				TestSend(clientSocket);
 				break;
 
+			case PacketCGHeader::HEADER_CG_ACTION_WITH_SUBH:
+				ret = TestAction3Recv(clientSocket);
+				break;
+
 			default:
 				std::cerr << "Unknown packet header: " << header << std::endl;
 				ret = false;
@@ -185,15 +189,70 @@ bool Server::TestSend(std::shared_ptr<CSocket> clientSocket)
 		return false;
 
 	TPacketGCServerResponse responsePacket;
-	strncpy(responsePacket.response, "blabla message server blabla", sizeof(responsePacket.response) - 1);
-	responsePacket.response[sizeof(responsePacket.response) - 1] = '\0';
+	responsePacket.size = sizeof(responsePacket);
+
+	TPacketGCServerResponseDynamic responseSubPacket;
+	responsePacket.size += sizeof(responseSubPacket);
+
+	strncpy(responseSubPacket.response, "blabla message server blabla", sizeof(responseSubPacket.response) - 1);
+	responseSubPacket.response[sizeof(responseSubPacket.response) - 1] = '\0';
+	responseSubPacket.num = 33;
 
 	if (!dataStream->Send(sizeof(responsePacket), &responsePacket))
+		return false;
+
+	if (!dataStream->Send(sizeof(responseSubPacket), &responseSubPacket))
 		return false;
 
 	std::cout << "Response sended." << std::endl;
 
 	watcher->add_fd(clientSocket->GetSocket(), clientSocket, FDW_WRITE, true);
+	return true;
+}
+
+bool Server::TestAction3Recv(std::shared_ptr<CSocket> clientSocket)
+{
+	const auto dataStream = clientSocket->GetDataStream();
+	if (!dataStream)
+		return false;
+
+	TPacketCGAction3WithSubH action3Packet;
+	if (!dataStream->Recv(sizeof(action3Packet), &action3Packet))
+		return false;
+
+	switch (action3Packet.subheader)
+	{
+		case ACTION3_SUBHEADER_CG_1:
+		{
+			TPacketCGAction3Sub1 sub;
+			if (!dataStream->Recv(sizeof(sub), &sub))
+				return false;
+
+			std::cout << "action3 receved. sub = " << 1 << "flag = " << sub.flag << std::endl;
+		}
+		break;
+
+		case ACTION3_SUBHEADER_CG_2:
+		{
+			TPacketCGAction3Sub2 sub;
+			if (!dataStream->Recv(sizeof(sub), &sub))
+				return false;
+
+			std::cout << "action3 receved. sub = " << 2 << "flag = " << sub.flag1 << sub.flag2 << std::endl;
+		}
+		break;
+
+		case ACTION3_SUBHEADER_CG_3:
+		{
+			TPacketCGAction3Sub3 sub;
+			if (!dataStream->Recv(sizeof(sub), &sub))
+				return false;
+
+			std::cout << "action3 receved. sub = " << 3 << "flag = " << sub.flag1 << sub.flag2 << sub.flag3 << std::endl;
+		}
+		break;
+	}
+
 	return true;
 }
 
@@ -240,8 +299,24 @@ bool Server::CheckPacket(std::shared_ptr<CSocket> clientSocket, TPacketHeader* p
 		return false;
 	}
 
-	if (!dataStream->Peek(packetType.iPacketSize))
-		return false;
+	if (packetType.isDynamicSizePacket)
+	{
+		TDynamicSizePacketHeader dynamicSizePacketHeader;
+
+		if (!dataStream->Peek(sizeof(TDynamicSizePacketHeader), &dynamicSizePacketHeader))
+			return false;
+
+		if (!dataStream->Peek(dynamicSizePacketHeader.size))
+		{
+			std::cerr << "Not enough dynamic packet size. Header: " << dynamicSizePacketHeader.header << " Packet size: " << dynamicSizePacketHeader.size << std::endl;
+			return false;
+		}
+	}
+	else
+	{
+		if (!dataStream->Peek(packetType.iPacketSize))
+			return false;
+	}
 
 	if (!tempHeader)
 		return false;

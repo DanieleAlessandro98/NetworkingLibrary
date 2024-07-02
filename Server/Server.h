@@ -19,6 +19,7 @@ class Server
 
 		bool TestRecv(std::shared_ptr<Net::CSocket> clientSocket);
 		bool TestSend(std::shared_ptr<Net::CSocket> clientSocket);
+		bool TestAction3Recv(std::shared_ptr<Net::CSocket> clientSocket);
 
 	private:
 		Net::CSocket listenSocket;
