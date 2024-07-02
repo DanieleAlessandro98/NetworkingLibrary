@@ -146,7 +146,6 @@
   <ItemGroup>
     <ClCompile Include="AbstractPacketHeaderMap.cpp" />
     <ClCompile Include="DataStream.cpp" />
-    <ClCompile Include="Packet.cpp" />
     <ClCompile Include="NetAddress.cpp" />
     <ClCompile Include="NetDevice.cpp" />
     <ClCompile Include="Socket.cpp" />
@@ -160,9 +159,7 @@
     <ClInclude Include="NetAddress.h" />
     <ClInclude Include="NetDevice.h" />
     <ClInclude Include="NetException.h" />
-    <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketDefinition.h" />
-    <ClInclude Include="PacketException.h" />
     <ClInclude Include="Socket.h" />
     <ClInclude Include="SocketWatcher.h" />
     <ClInclude Include="StdAfx.h" />
