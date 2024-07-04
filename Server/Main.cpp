@@ -7,8 +7,7 @@ int main()
 {
 	Server server;
 
-	Net::CNetDevice netDevice;
-	if (!netDevice.Create())
+	if (!Net::CNetDevice::Create())
 	{
 		std::cerr << "Failed to create winsock" << std::endl;
 		system("pause");
@@ -21,7 +20,7 @@ int main()
 			server.Process();
 	}
 
-	netDevice.Destroy();
+	Net::CNetDevice::Destroy();
 
 	system("pause");
 	return 0;

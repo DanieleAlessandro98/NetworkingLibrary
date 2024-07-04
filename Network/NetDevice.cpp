@@ -3,15 +3,7 @@
 
 namespace Net
 {
-	CNetDevice::CNetDevice()
-	{
-		m_isWSA = false;
-	}
-
-	CNetDevice::~CNetDevice()
-	{
-		Destroy();
-	}
+	bool CNetDevice::m_isWSA = false;
 
 	void CNetDevice::Destroy()
 	{

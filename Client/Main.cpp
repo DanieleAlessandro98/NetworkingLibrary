@@ -8,8 +8,7 @@ int main()
 {
     Client client;
 
-    Net::CNetDevice netDevice;
-    if (!netDevice.Create())
+    if (!Net::CNetDevice::Create())
     {
         std::cerr << "Failed to create winsock" << std::endl;
         system("pause");
@@ -42,7 +41,7 @@ int main()
         }
     }
 
-    netDevice.Destroy();
+    Net::CNetDevice::Destroy();
 
     system("pause");
     return 0;

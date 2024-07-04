@@ -4,14 +4,11 @@ namespace Net
 {
 	class CNetDevice
 	{
-	public:
-		CNetDevice();
-		virtual ~CNetDevice();
+		public:
+			static void Destroy();
+			static bool Create();
 
-		void Destroy();
-		bool Create();
-
-	protected:
-		bool m_isWSA;
+		private:
+			static bool m_isWSA;
 	};
 }
