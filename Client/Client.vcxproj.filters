@@ -24,7 +24,7 @@
     <ClCompile Include="StdAfx.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="ClientPacketHeaderMap.cpp">
+    <ClCompile Include="ClientPacketManager.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,7 +35,7 @@
     <ClInclude Include="StdAfx.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="ClientPacketHeaderMap.h">
+    <ClInclude Include="ClientPacketManager.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>

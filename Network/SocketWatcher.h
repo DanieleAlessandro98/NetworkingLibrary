@@ -45,9 +45,6 @@ namespace Net
             // Verifica se un determinato evento si è verificato per un file descriptor specifico.
             int get_event_status(int fd, unsigned int event_idx) const;
 
-            // Ottiene la dimensione del buffer associato a un file descriptor.
-            int get_buffer_size(int fd) const;
-
         private:
             // Cerca l'indice del file descriptor. Se il file descriptor è trovato, restituisce il suo indice; altrimenti, restituisce -1.
             int find_fd_index(int fd) const;

@@ -144,7 +144,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AbstractPacketHeaderMap.cpp" />
+    <ClCompile Include="AbstractClient.cpp" />
+    <ClCompile Include="AbstractPacketManager.cpp" />
+    <ClCompile Include="AbstractServer.cpp" />
     <ClCompile Include="DataStream.cpp" />
     <ClCompile Include="NetAddress.cpp" />
     <ClCompile Include="NetDevice.cpp" />
@@ -153,7 +155,12 @@
     <ClCompile Include="StdAfx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AbstractPacketHeaderMap.h" />
+    <ClInclude Include="AbstractClient.h" />
+    <ClInclude Include="AbstractClientPacketManager.h" />
+    <ClInclude Include="AbstractEntity.h" />
+    <ClInclude Include="AbstractPacketManager.h" />
+    <ClInclude Include="AbstractServer.h" />
+    <ClInclude Include="AbstractServerPacketManager.h" />
     <ClInclude Include="DataStream.h" />
     <ClInclude Include="Definition.h" />
     <ClInclude Include="NetAddress.h" />

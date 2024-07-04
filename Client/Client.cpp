@@ -1,6 +1,5 @@
 #include "StdAfx.h"
 #include "Client.h"
-#include "ClientPacketHeaderMap.h"
 #include <iostream>
 #include <random>
 
@@ -8,122 +7,55 @@ using namespace Net;
 
 Client::Client()
 {
-	isConnected = false;
-	m_connectLimitTime = 0;
+	m_packetManager = std::make_shared<CClientPacketManager>(this);
 }
 
-bool Client::Initialize(const char* c_szAddr, int port)
+void Client::OnSocketCreated()
 {
-	try
-	{
-		if (!connectSocket.Create())
-		{
-			std::cerr << "Failed to create socket" << std::endl;
-			return false;
-		}
+	std::cout << "socket created" << std::endl;
+}
 
-		CNetAddress netAddress;
-		if (!netAddress.Set(c_szAddr, port))
-		{
-			std::cerr << "Failed to set address" << std::endl;
-			return false;
-		}
-
-		u_long arg = 1;
-		ioctlsocket(connectSocket.GetSocket(), FIONBIO, &arg);	// Non-blocking mode
-
-		if (!connectSocket.Connect(netAddress))
-		{
-			std::cerr << "Failed to connect to the server" << std::endl;
-			return false;
-		}
-	}
-	catch (NetException ex)
-	{
-		std::cerr << "Exception: " << ex.what() << std::endl;
-		return false;
-	}
-
-	m_connectLimitTime = time(NULL) + 3;
+void Client::OnConnect()
+{
 	std::cout << "socket connected to the server" << std::endl;
-	return true;
 }
 
-void Client::Process()
+void Client::OnConnectFail()
 {
-	fd_set readfds;
-	FD_ZERO(&readfds);
-	FD_SET(connectSocket.GetSocket(), &readfds);
-
-	fd_set writefds;
-	FD_ZERO(&writefds);
-	FD_SET(connectSocket.GetSocket(), &writefds);
-
-	// Set timeout (optional)
-	timeval timeout;
-	timeout.tv_sec = 0; // 0 second timeout (immediatly)
-	timeout.tv_usec = 0;
-
-	int result = select(0, &readfds, &writefds, NULL, &timeout);
-	if (result == SOCKET_ERROR)
-	{
-		std::cerr << "select failed with error: " << WSAGetLastError() << std::endl;
-		return;
-	}
-
-	if (!isConnected)
-	{
-		if (FD_ISSET(connectSocket.GetSocket(), &writefds))
-		{
-			isConnected = true;
-			std::cout << "OnConnectSuccess" << std::endl;
-		}
-		else if (time(NULL) > m_connectLimitTime)
-		{
-			std::cout << "OnConnectFailed" << std::endl;
-		}
-
-		return;
-	}
-
-	const auto dataStream = connectSocket.GetDataStream();
-	if (!dataStream)
-		return;
-
-	if (FD_ISSET(connectSocket.GetSocket(), &writefds) && (dataStream->GetSendBufInputPos() > dataStream->GetSendBufOutpusPos()))
-	{
-		if (!dataStream->ProcessSend(connectSocket.GetSocket()))
-		{
-			int error = WSAGetLastError();
-
-			if (error != WSAEWOULDBLOCK)
-			{
-				std::cout << "OnRemoteDisconnect" << std::endl;
-				return;
-			}
-		}
-	}
-
-	if (FD_ISSET(connectSocket.GetSocket(), &readfds))
-	{
-		if (!dataStream->ProcessRecv(connectSocket.GetSocket()))
-		{
-			std::cout << "OnRemoteDisconnect" << std::endl;
-			return;
-		}
-	}
-
-	OnProcessRecv();
+	std::cout << "OnConnectFailed" << std::endl;
 }
 
-bool Client::IsConnected()
+void Client::OnDisconnect()
 {
-	return isConnected;
+	std::cout << "OnRemoteDisconnect" << std::endl;
+}
+
+bool Client::Analyze(TPacketHeader header, std::shared_ptr<CSocket> socket)
+{
+	bool ret = true;
+
+	switch (static_cast<Net::PacketGCHeader>(header))
+	{
+		case PacketGCHeader::HEADER_GC_SERVER_RESPONSE:
+			ret = TestRecv();
+			TestSendAction3();
+			break;
+
+		default:
+			std::cerr << "Unknown packet header: " << static_cast<int>(header) << std::endl;
+			ret = false;
+			break;
+	}
+
+	return ret;
 }
 
 void Client::TestSend()
 {
-	const auto dataStream = connectSocket.GetDataStream();
+	if (!connectSocket)
+		return;
+
+	const auto dataStream = connectSocket->GetDataStream();
 	if (!dataStream)
 		return;
 
@@ -140,7 +72,10 @@ void Client::TestSend()
 
 bool Client::TestRecv()
 {
-	const auto dataStream = connectSocket.GetDataStream();
+	if (!connectSocket)
+		return false;
+
+	const auto dataStream = connectSocket->GetDataStream();
 	if (!dataStream)
 		return false;
 
@@ -171,7 +106,10 @@ int Client::__GetRandNumber()
 
 void Client::TestSendAction3()
 {
-	const auto dataStream = connectSocket.GetDataStream();
+	if (!connectSocket)
+		return;
+
+	const auto dataStream = connectSocket->GetDataStream();
 	if (!dataStream)
 		return;
 
@@ -256,106 +194,4 @@ void Client::TestSendAction3()
 		}
 		break;
 	}
-}
-
-void Client::OnProcessRecv()
-{
-	TPacketHeader header = 0;
-
-	bool ret = true;
-	while (ret)
-	{
-		if (!CheckPacket(&header))
-			break;
-
-		switch (static_cast<Net::PacketGCHeader>(header))
-		{
-			case PacketGCHeader::HEADER_GC_SERVER_RESPONSE:
-					ret = TestRecv();
-					TestSendAction3();
-					break;
-		}
-	}
-
-	if (!ret)
-		RecvErrorPacket(header);
-}
-
-bool Client::CheckPacket(Net::TPacketHeader* packetHeader)
-{
-	const auto dataStream = connectSocket.GetDataStream();
-	if (!dataStream)
-		return false;
-
-	static CClientPacketHeaderMap packetHeaderMap;
-
-	TPacketHeader tempHeader = 0;
-
-	if (!dataStream->Peek(sizeof(TPacketHeader), &tempHeader))
-		return false;
-
-	if (0 == tempHeader)
-	{
-		if (!dataStream->Recv(sizeof(TPacketHeader), &tempHeader))
-			return false;
-
-		while (dataStream->Peek(sizeof(TPacketHeader), &tempHeader))
-		{
-			if (0 == tempHeader)
-			{
-				if (!dataStream->Recv(sizeof(TPacketHeader), &tempHeader))
-					return false;
-			}
-			else
-			{
-				break;
-			}
-		}
-
-		if (0 == tempHeader)
-			return false;
-	}
-
-	CAbstractPacketHeaderMap::TPacketType packetType;
-	if (!packetHeaderMap.Get(tempHeader, &packetType))
-	{
-		std::cerr << "Unknown packet header:" << std::endl;
-		dataStream->ClearRecvBuffer();
-		return false;
-	}
-
-	if (packetType.isDynamicSizePacket)
-	{
-		TDynamicSizePacketHeader dynamicSizePacketHeader;
-
-		if (!dataStream->Peek(sizeof(TDynamicSizePacketHeader), &dynamicSizePacketHeader))
-			return false;
-
-		if (!dataStream->Peek(dynamicSizePacketHeader.size))
-		{
-			std::cerr << "Not enough dynamic packet size. Header: " << dynamicSizePacketHeader.header << " Packet size: " << dynamicSizePacketHeader.size << std::endl;
-			return false;
-		}
-	}
-	else
-	{
-		if (!dataStream->Peek(packetType.iPacketSize))
-			return false;
-	}
-
-	if (!tempHeader)
-		return false;
-
-	*packetHeader = tempHeader;
-	return true;
-}
-
-void Client::RecvErrorPacket(int header)
-{
-	const auto dataStream = connectSocket.GetDataStream();
-	if (!dataStream)
-		return;
-
-	std::cerr << "Not handled this header: " << header << std::endl;
-	dataStream->ClearRecvBuffer();
 }

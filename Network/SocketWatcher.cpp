@@ -176,12 +176,6 @@ namespace Net
             return FDW_WRITE;
 
         return 0;
-
-    }
-
-    int SocketWatcher::get_buffer_size(int fd) const
-    {
-        return INT_MAX; // XXX TODO
     }
 
     int SocketWatcher::find_fd_index(int fd) const
