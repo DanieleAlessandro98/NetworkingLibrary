@@ -34,9 +34,6 @@ int main()
                 }
 
                 std::cout << std::endl;
-
-                if (input == "ok")
-                    client.TestSend();
             }
         }
     }

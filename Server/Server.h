@@ -17,9 +17,4 @@ class Server : public Net::CAbstractServer
 		void OnSocketListening() override;
 		void OnConnectClient(std::shared_ptr<Net::CSocket> client_data) override;
 		void OnDisconnectClient(std::shared_ptr<Net::CSocket> client_data) override;
-		bool Analyze(Net::TPacketHeader header, std::shared_ptr<Net::CSocket> socket) override;
-
-		bool TestRecv(std::shared_ptr<Net::CSocket> clientSocket);
-		bool TestSend(std::shared_ptr<Net::CSocket> clientSocket);
-		bool TestAction3Recv(std::shared_ptr<Net::CSocket> clientSocket);
 };

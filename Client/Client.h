@@ -17,13 +17,4 @@ class Client : public Net::CAbstractClient
 		void OnConnect() override;
 		void OnConnectFail() override;
 		void OnDisconnect() override;
-		bool Analyze(Net::TPacketHeader header, std::shared_ptr<Net::CSocket> socket) override;
-
-		void TestSend();
-		bool TestRecv();
-		void TestSendAction3();
-
-	private:
-		int __GetRandNumber();
-
 };

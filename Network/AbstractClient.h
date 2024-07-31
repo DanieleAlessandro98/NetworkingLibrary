@@ -19,7 +19,6 @@ namespace Net
 			virtual void OnConnect() = 0;
 			virtual void OnConnectFail() = 0;
 			virtual void OnDisconnect() = 0;
-			virtual bool Analyze(TPacketHeader header, std::shared_ptr<CSocket> socket) = 0;
 
 		protected:
 			std::shared_ptr<Net::CSocket> connectSocket;

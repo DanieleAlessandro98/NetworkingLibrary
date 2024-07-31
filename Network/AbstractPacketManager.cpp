@@ -129,7 +129,7 @@ namespace Net
             if (!CheckPacket(socket, &header))
                 break;
 
-            ret = entity->Analyze(header, socket);
+            //ret = entity->Analyze(header, socket);
         }
 
         if (!ret)

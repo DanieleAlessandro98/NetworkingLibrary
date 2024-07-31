@@ -19,7 +19,6 @@ namespace Net
 			virtual void OnSocketListening() = 0;
 			virtual void OnConnectClient(std::shared_ptr<CSocket> client_data) = 0;
 			virtual void OnDisconnectClient(std::shared_ptr<CSocket> client_data) = 0;
-			virtual bool Analyze(TPacketHeader header, std::shared_ptr<CSocket> socket) = 0;
 
 		protected:
 			CSocket listenSocket;
