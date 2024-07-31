@@ -118,6 +118,11 @@ namespace Net
 		}
 	}
 
+	void CAbstractClient::Shutdown()
+	{
+		connectSocket->Close();
+	}
+
 	bool CAbstractClient::IsConnected()
 	{
 		return isConnected;

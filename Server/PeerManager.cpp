@@ -7,8 +7,49 @@ CPeerManager::CPeerManager()
 {
     m_iPeerConnected = 0;
     m_iHandleCount = 0;
+    m_bDestroyed = false;
+
     m_setHandshake.clear();
     m_mapPeer.clear();
+}
+
+CPeerManager::~CPeerManager()
+{
+    if (m_bDestroyed)
+        return;
+
+    m_bDestroyed = true;
+
+    DisconnectAll();
+}
+
+void CPeerManager::DisconnectAll()
+{
+    for (const auto& peer : m_mapPeer)
+    {
+        auto d = peer.second;
+        DestroyDesc(d.get(), true);
+    }
+
+    m_mapPeer.clear();
+    m_setHandshake.clear();
+}
+
+void CPeerManager::DestroyDesc(CPeer* d, bool skipMapErase)
+{
+    if (!d)
+        return;
+
+    if (!skipMapErase)
+    {
+        if (d->GetHandshake())
+            m_setHandshake.erase(d->GetHandshake());
+
+        if (d->GetHandle())
+            m_mapPeer.erase(d->GetHandle());
+    }
+
+    --m_iPeerConnected;
 }
 
 bool CPeerManager::CanAcceptNewConnection()
@@ -67,4 +108,12 @@ uint32_t CPeerManager::__CreateHandshake()
         crc = generate_crc();
 
     return crc;
+}
+
+std::shared_ptr<CPeer> CPeerManager::GetFirstPeer()
+{
+    if (m_mapPeer.empty())
+        return nullptr;
+
+    return m_mapPeer.begin()->second;
 }

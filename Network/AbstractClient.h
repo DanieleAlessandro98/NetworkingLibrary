@@ -13,6 +13,8 @@ namespace Net
 
 			bool Initialize(const char* c_szAddr, int port) override;
 			void Process() override;
+			void Shutdown() override;
+
 			bool IsConnected();
 
 			virtual void OnSocketCreated() = 0;

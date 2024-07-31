@@ -37,3 +37,19 @@ void Server::OnDisconnectClient(std::shared_ptr<CSocket> client_data)
 
 	std::cout << "client disconnected" << std::endl;
 }
+
+void Server::DisconnectAll()
+{
+	if (m_peerManager)
+		m_peerManager->DisconnectAll();
+}
+
+void Server::DisconnectFirstPeer()
+{
+	if (m_peerManager)
+	{
+		auto firstPeer = m_peerManager->GetFirstPeer();
+		if (firstPeer)
+			m_peerManager->DestroyDesc(firstPeer.get());
+	}
+}

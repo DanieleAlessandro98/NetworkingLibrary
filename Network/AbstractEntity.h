@@ -13,6 +13,7 @@ namespace Net
 
             virtual bool Initialize(const char* c_szAddr, int port) = 0;
             virtual void Process() = 0;
+            virtual void Shutdown() = 0;
     };
 
     inline AbstractEntity::~AbstractEntity() {}

@@ -129,4 +129,12 @@ namespace Net
 
 		OnConnectClient(newClientSocket);
 	}
+
+	void CAbstractServer::Shutdown()
+	{
+		DisconnectAll();
+
+		watcher->remove_fd(listenSocket.GetSocket());
+		listenSocket.Close();
+	}
 }
