@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClCompile Include="Peer.cpp" />
     <ClCompile Include="PeerManager.cpp" />
+    <ClCompile Include="ServerHandshake.cpp" />
     <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ServerPacketManager.cpp" />
@@ -165,6 +166,7 @@
   <ItemGroup>
     <ClInclude Include="Peer.h" />
     <ClInclude Include="PeerManager.h" />
+    <ClInclude Include="ServerHandshake.h" />
     <ClInclude Include="ServerMain.h" />
     <ClInclude Include="ServerPacketManager.h" />
     <ClInclude Include="StdAfx.h" />

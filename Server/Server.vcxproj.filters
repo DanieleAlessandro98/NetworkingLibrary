@@ -33,6 +33,9 @@
     <ClCompile Include="PeerManager.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="ServerHandshake.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerMain.h">
@@ -48,6 +51,9 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="PeerManager.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerHandshake.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>

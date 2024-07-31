@@ -5,6 +5,7 @@
 #include <Network/SocketWatcher.h>
 #include <Network/AbstractPeer.h>
 #include <Network/AbstractPacketHandler.h>
+#include "ServerHandshake.h"
 
 class CPeer : Net::CAbstractPeer
 {
@@ -28,5 +29,7 @@ class CPeer : Net::CAbstractPeer
 		int								m_dwHandle;
 		uint32_t						m_dwHandshake;
 		std::shared_ptr<Net::CSocket>	m_socket;
-		Net::CAbstractPacketHandler* m_packetHandler;
+
+		Net::CAbstractPacketServerHandler* m_packetHandler;
+		std::unique_ptr<ServerHandshake> m_packetHandlerServerHandshake;
 };

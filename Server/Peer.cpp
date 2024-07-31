@@ -7,7 +7,9 @@ CPeer::CPeer(std::shared_ptr<Net::SocketWatcher> serverWatcher)
 	m_dwHandle = 0;
 	m_bDestroyed = false;
 	m_iPhase = PHASE_CLOSE;
+
 	m_packetHandler = nullptr;
+	m_packetHandlerServerHandshake = std::make_unique<ServerHandshake>();
 }
 
 CPeer::~CPeer()
@@ -34,6 +36,10 @@ void CPeer::SetPhase(int phase)
 	{
 		case PHASE_CLOSE:
 			m_packetHandler = nullptr;
+			break;
+
+		case PHASE_HANDSHAKE:
+			m_packetHandler = m_packetHandlerServerHandshake.get();
 			break;
 	}
 }

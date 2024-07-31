@@ -6,4 +6,5 @@
 enum EPhase
 {
 	PHASE_CLOSE,
+	PHASE_HANDSHAKE,
 };
