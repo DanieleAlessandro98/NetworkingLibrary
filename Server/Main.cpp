@@ -1,12 +1,12 @@
 #include "StdAfx.h"
 #include <iostream>
 #include <Network/NetDevice.h>
-#include "Server.h"
+#include "ServerMain.h"
 #include <conio.h>
 
 int main()
 {
-	Server server;
+	ServerMain server;
 
 	if (!Net::CNetDevice::Create())
 	{

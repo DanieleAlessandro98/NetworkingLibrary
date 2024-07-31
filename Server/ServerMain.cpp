@@ -1,36 +1,36 @@
 #include "StdAfx.h"
-#include "Server.h"
+#include "ServerMain.h"
 #include <iostream>
 #include <Network/PacketDefinition.h>
 
 using namespace Net;
 
-Server::Server()
+ServerMain::ServerMain()
 {
 	m_packetManager = std::make_shared<CServerPacketManager>(this);
 }
 
-void Server::OnSocketListening()
+void ServerMain::OnSocketListening()
 {
 	m_peerManager = std::make_unique<CPeerManager>();
 	std::cout << "Socket Listening..." << std::endl;
 }
 
-void Server::OnConnectClient(std::shared_ptr<CSocket> client_data)
+void ServerMain::OnConnectClient(std::shared_ptr<CSocket> newClientSocket)
 {
-	if (!client_data)
+	if (!newClientSocket)
 		return;
 
-	m_peerManager->AcceptPeer(client_data, watcher);
+	m_peerManager->AcceptPeer(newClientSocket, watcher);
 	std::cout << "new client accepted" << std::endl;
 }
 
-bool Server::CanAcceptNewConnection()
+bool ServerMain::CanAcceptNewConnection()
 {
 	return m_peerManager->CanAcceptNewConnection();
 }
 
-void Server::OnDisconnectClient(std::shared_ptr<CSocket> client_data)
+void ServerMain::OnDisconnectClient(std::shared_ptr<CSocket> client_data)
 {
 	if (!client_data)
 		return;
@@ -38,13 +38,13 @@ void Server::OnDisconnectClient(std::shared_ptr<CSocket> client_data)
 	std::cout << "client disconnected" << std::endl;
 }
 
-void Server::DisconnectAll()
+void ServerMain::DisconnectAll()
 {
 	if (m_peerManager)
 		m_peerManager->DisconnectAll();
 }
 
-void Server::DisconnectFirstPeer()
+void ServerMain::DisconnectFirstPeer()
 {
 	if (m_peerManager)
 	{

@@ -29,7 +29,7 @@ void CPeer::Setup(std::shared_ptr<Net::CSocket> socket, int handleCount, uint32_
 	m_socket = socket;
 	m_dwHandle = handleCount;
 
-	AddSocketToWatcher(m_socket->GetSocket(), this);
+	AddSocketToWatcher(m_socket->GetSocket());
 
 	StartHandshake(handshake);
 }

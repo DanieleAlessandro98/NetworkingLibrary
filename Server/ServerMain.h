@@ -9,15 +9,15 @@
 #include <Network/PacketDefinition.h>
 #include <Server/PeerManager.h>
 
-class Server : public Net::CAbstractServer
+class ServerMain : public Net::CAbstractServer
 {
 	public:
-		Server();
-		~Server() = default;
+		ServerMain();
+		~ServerMain() = default;
 
 		void OnSocketListening() override;
 		bool CanAcceptNewConnection() override;
-		void OnConnectClient(std::shared_ptr<Net::CSocket> client_data) override;
+		void OnConnectClient(std::shared_ptr<Net::CSocket> newClientSocket) override;
 		void OnDisconnectClient(std::shared_ptr<Net::CSocket> client_data) override;
 		void DisconnectAll() override;
 

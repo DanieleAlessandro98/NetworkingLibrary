@@ -15,7 +15,7 @@ namespace Net
 
             virtual CSocket* GetSocket() = 0;
 
-            void AddSocketToWatcher(int fd, CAbstractPeer* client_data);
+            void AddSocketToWatcher(int fd);
             void RemoveSocketToWatcher(int fd);
 
         protected:
