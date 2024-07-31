@@ -7,6 +7,7 @@
 #include "ServerPacketManager.h"
 #include <memory>
 #include <Network/PacketDefinition.h>
+#include <Server/PeerManager.h>
 
 class Server : public Net::CAbstractServer
 {
@@ -15,6 +16,10 @@ class Server : public Net::CAbstractServer
 		~Server() = default;
 
 		void OnSocketListening() override;
+		bool CanAcceptNewConnection() override;
 		void OnConnectClient(std::shared_ptr<Net::CSocket> client_data) override;
 		void OnDisconnectClient(std::shared_ptr<Net::CSocket> client_data) override;
+
+	private:
+		std::unique_ptr<CPeerManager> m_peerManager;
 };

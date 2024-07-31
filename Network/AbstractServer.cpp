@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include <iostream>
 #include "AbstractServer.h"
+#include "AbstractPeer.h"
 
 namespace Net
 {
@@ -49,7 +50,7 @@ namespace Net
 		if (num_events < 0)
 			return;
 
-		std::shared_ptr<CSocket> d;
+		CAbstractPeer* d;
 
 		for (int event_idx = 0; event_idx < num_events; ++event_idx)
 		{
@@ -65,43 +66,47 @@ namespace Net
 				continue;
 			}
 
-			const auto dataStream = d->GetDataStream();
+			const auto peerSocket = d->GetSocket();
+			if (!peerSocket)
+				continue;
+
+			const auto dataStream = peerSocket->GetDataStream();
 			if (!dataStream)
 				continue;
 
-			int iRet = watcher->get_event_status(d->GetSocket(), event_idx);
-			switch (iRet)
-			{
-				case FDW_READ:
-				{
-					if (!m_packetManager->ProcessRecv(d))
-					{
-						OnDisconnectClient(d);
-						watcher->remove_fd(d->GetSocket());
-					}
-				}
-				break;
+			int iRet = watcher->get_event_status(peerSocket->GetSocket(), event_idx);
+			//switch (iRet)
+			//{
+			//	case FDW_READ:
+			//	{
+			//		if (!m_packetManager->ProcessRecv(d))
+			//		{
+			//			OnDisconnectClient(d);
+			//			watcher->remove_fd(d->GetSocket());
+			//		}
+			//	}
+			//	break;
 
-				case FDW_WRITE:
-				{
-					if (!dataStream->ProcessSend(d->GetSocket()))
-					{
-						OnDisconnectClient(d);
-						watcher->remove_fd(d->GetSocket());
-					}
-				}
-				break;
+			//	case FDW_WRITE:
+			//	{
+			//		if (!dataStream->ProcessSend(d->GetSocket()))
+			//		{
+			//			OnDisconnectClient(d);
+			//			watcher->remove_fd(d->GetSocket());
+			//		}
+			//	}
+			//	break;
 
-				case FDW_EOF:
-				{
-					std::cerr << "SetPhase(PHASE_CLOSE)" << std::endl;
-				}
-				break;
+			//	case FDW_EOF:
+			//	{
+			//		std::cerr << "SetPhase(PHASE_CLOSE)" << std::endl;
+			//	}
+			//	break;
 
-				default:
-					printf("watcher->get_event_status returned unknown %d", iRet);
-					break;
-			}
+			//	default:
+			//		printf("watcher->get_event_status returned unknown %d", iRet);
+			//		break;
+			//}
 		}
 	}
 
@@ -115,7 +120,13 @@ namespace Net
 			return;
 		}
 
-		watcher->add_fd(newClientSocket->GetSocket(), newClientSocket, FDW_READ, false);
+		if (!CanAcceptNewConnection())
+		{
+			std::cerr << "max connection reached. MAX_ALLOW_USER = %d" << SERVER_MAX_INCOMING_CONNECTIONS << std::endl;
+			newClientSocket->Close();
+			return;
+		}
+
 		OnConnectClient(newClientSocket);
 	}
 }

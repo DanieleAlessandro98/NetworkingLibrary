@@ -155,12 +155,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Peer.cpp" />
+    <ClCompile Include="PeerManager.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ServerPacketManager.cpp" />
     <ClCompile Include="StdAfx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Peer.h" />
+    <ClInclude Include="PeerManager.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="ServerPacketManager.h" />
     <ClInclude Include="StdAfx.h" />

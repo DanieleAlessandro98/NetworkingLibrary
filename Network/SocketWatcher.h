@@ -3,9 +3,12 @@
 #include <vector>
 #include <memory>
 #include "Socket.h"
+#include "AbstractPeer.h"
 
 namespace Net
 {
+    class CAbstractPeer;
+
     enum EFdwatch
     {
         FDW_NONE = 0,
@@ -22,7 +25,7 @@ namespace Net
             ~SocketWatcher();
 
             // Aggiunge un file descriptor da monitorare, specificando i tipi di eventi (lettura/scrittura) e se deve essere monitorato una sola volta.
-            void add_fd(int fd, std::shared_ptr<CSocket> client_data, int events, int oneshot);
+            void add_fd(int fd, CAbstractPeer* client_data, int events, int oneshot);
 
             // Rimuove un file descriptor dalla lista dei file descriptor monitorati.
             void remove_fd(int fd);
@@ -34,7 +37,7 @@ namespace Net
             int get_ready_flags(int fd) const;
 
             // Ottiene i dati del client associati a un file descriptor pronto.
-            std::shared_ptr<CSocket> get_client_data(unsigned int event_index) const;
+            CAbstractPeer* get_client_data(unsigned int event_index) const;
 
             // Ottiene il file descriptor dall'indice dell'evento.
             int get_fd_from_index(unsigned int event_index) const;
@@ -74,7 +77,7 @@ namespace Net
             int                 num_monitored_fds_;
 
             // Vettore di puntatori che memorizza dati aggiuntivi associati a ciascun file descriptor monitorato.
-            std::vector<std::shared_ptr<CSocket>> fd_data_;
+            std::vector<CAbstractPeer*> fd_data_;
 
             // Vettore di flag che indicano gli eventi monitorati per ciascun file descriptor (lettura, scrittura, o entrambi).
             std::vector<int>    fd_event_flags_;

@@ -17,12 +17,13 @@ namespace Net
 			void HandleNewConnection();
 
 			virtual void OnSocketListening() = 0;
+			virtual bool CanAcceptNewConnection() = 0;
 			virtual void OnConnectClient(std::shared_ptr<CSocket> client_data) = 0;
 			virtual void OnDisconnectClient(std::shared_ptr<CSocket> client_data) = 0;
 
 		protected:
 			CSocket listenSocket;
-			std::unique_ptr<SocketWatcher> watcher;
+			std::shared_ptr<SocketWatcher> watcher;
 			std::shared_ptr<CAbstractServerPacketManager> m_packetManager;
 	};
 }

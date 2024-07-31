@@ -22,7 +22,7 @@ namespace Net
     {
     }
 
-    void SocketWatcher::add_fd(int fd, std::shared_ptr<CSocket> client_data, int events, int oneshot)
+    void SocketWatcher::add_fd(int fd, CAbstractPeer* client_data, int events, int oneshot)
     {
         int idx = find_fd_index(fd);
 
@@ -114,7 +114,7 @@ namespace Net
         return result;
     }
 
-    std::shared_ptr<CSocket> SocketWatcher::get_client_data(unsigned int event_index) const
+    CAbstractPeer* SocketWatcher::get_client_data(unsigned int event_index) const
     {
         if (event_index >= ready_fd_indices_.size())
             return nullptr;
