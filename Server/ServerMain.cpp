@@ -16,6 +16,11 @@ void ServerMain::OnSocketListening()
 	std::cout << "Socket Listening..." << std::endl;
 }
 
+bool ServerMain::CanAcceptNewConnection()
+{
+	return m_peerManager->CanAcceptNewConnection();
+}
+
 void ServerMain::OnConnectClient(std::shared_ptr<CSocket> newClientSocket)
 {
 	if (!newClientSocket)
@@ -23,11 +28,6 @@ void ServerMain::OnConnectClient(std::shared_ptr<CSocket> newClientSocket)
 
 	m_peerManager->AcceptPeer(newClientSocket, watcher);
 	std::cout << "new client accepted" << std::endl;
-}
-
-bool ServerMain::CanAcceptNewConnection()
-{
-	return m_peerManager->CanAcceptNewConnection();
 }
 
 void ServerMain::OnDisconnectClient(std::shared_ptr<CSocket> client_data)

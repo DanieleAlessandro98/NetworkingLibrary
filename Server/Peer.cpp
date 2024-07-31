@@ -6,6 +6,8 @@ CPeer::CPeer(std::shared_ptr<Net::SocketWatcher> serverWatcher)
 	m_serverWatcher = serverWatcher;
 	m_dwHandle = 0;
 	m_bDestroyed = false;
+	m_iPhase = PHASE_CLOSE;
+	m_packetHandler = nullptr;
 }
 
 CPeer::~CPeer()
@@ -21,6 +23,18 @@ CPeer::~CPeer()
 		RemoveSocketToWatcher(m_socket->GetSocket());
 		m_socket->Close();
 		m_socket.reset();
+	}
+}
+
+void CPeer::SetPhase(int phase)
+{
+	m_iPhase = phase;
+
+	switch (m_iPhase)
+	{
+		case PHASE_CLOSE:
+			m_packetHandler = nullptr;
+			break;
 	}
 }
 

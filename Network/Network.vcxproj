@@ -159,6 +159,7 @@
     <ClInclude Include="AbstractClient.h" />
     <ClInclude Include="AbstractClientPacketManager.h" />
     <ClInclude Include="AbstractEntity.h" />
+    <ClInclude Include="AbstractPacketHandler.h" />
     <ClInclude Include="AbstractPacketManager.h" />
     <ClInclude Include="AbstractPeer.h" />
     <ClInclude Include="AbstractServer.h" />

@@ -13,6 +13,7 @@ namespace Net
             CAbstractPeer() = default;
             virtual ~CAbstractPeer() = 0;
 
+            virtual void SetPhase(int phase) = 0;
             virtual CSocket* GetSocket() = 0;
 
             void AddSocketToWatcher(int fd);
