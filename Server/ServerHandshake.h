@@ -8,5 +8,5 @@ class ServerHandshake : public Net::CAbstractPacketServerHandler
 		ServerHandshake() = default;
 		~ServerHandshake() = default;
 
-		void Analyze(Net::CAbstractPeer* peer, Net::TPacketHeader header) override;
+		bool Analyze(Net::CAbstractPeer* peer, Net::TPacketHeader header) override;
 };

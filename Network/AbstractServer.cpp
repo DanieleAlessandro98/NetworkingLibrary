@@ -75,38 +75,38 @@ namespace Net
 				continue;
 
 			int iRet = watcher->get_event_status(peerSocket->GetSocket(), event_idx);
-			//switch (iRet)
-			//{
-			//	case FDW_READ:
-			//	{
-			//		if (!m_packetManager->ProcessRecv(d))
-			//		{
-			//			OnDisconnectClient(d);
-			//			watcher->remove_fd(d->GetSocket());
-			//		}
-			//	}
-			//	break;
+			switch (iRet)
+			{
+				case FDW_READ:
+				{
+					if (!m_packetManager->ProcessRecv(d))
+					{
+						OnDisconnectClient(d);
+						watcher->remove_fd(peerSocket->GetSocket());
+					}
+				}
+				break;
 
-			//	case FDW_WRITE:
-			//	{
-			//		if (!dataStream->ProcessSend(d->GetSocket()))
-			//		{
-			//			OnDisconnectClient(d);
-			//			watcher->remove_fd(d->GetSocket());
-			//		}
-			//	}
-			//	break;
+				case FDW_WRITE:
+				{
+					if (!dataStream->ProcessSend(peerSocket->GetSocket()))
+					{
+						OnDisconnectClient(d);
+						watcher->remove_fd(peerSocket->GetSocket());
+					}
+				}
+				break;
 
-			//	case FDW_EOF:
-			//	{
-			//		std::cerr << "SetPhase(PHASE_CLOSE)" << std::endl;
-			//	}
-			//	break;
+				case FDW_EOF:
+				{
+					std::cerr << "SetPhase(PHASE_CLOSE)" << std::endl;
+				}
+				break;
 
-			//	default:
-			//		printf("watcher->get_event_status returned unknown %d", iRet);
-			//		break;
-			//}
+				default:
+					printf("watcher->get_event_status returned unknown %d", iRet);
+					break;
+			}
 		}
 	}
 

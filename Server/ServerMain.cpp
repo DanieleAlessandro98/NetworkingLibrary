@@ -30,9 +30,9 @@ void ServerMain::OnConnectClient(std::shared_ptr<CSocket> newClientSocket)
 	std::cout << "new client accepted" << std::endl;
 }
 
-void ServerMain::OnDisconnectClient(std::shared_ptr<CSocket> client_data)
+void ServerMain::OnDisconnectClient(Net::CAbstractPeer* peer)
 {
-	if (!client_data)
+	if (!peer)
 		return;
 
 	std::cout << "client disconnected" << std::endl;

@@ -5,6 +5,7 @@
 #include "PacketDefinition.h"
 #include "Socket.h"
 #include "AbstractEntity.h"
+#include "AbstractPeer.h"
 
 namespace Net
 {
@@ -31,10 +32,10 @@ namespace Net
 			void Set(PacketGCHeader header, const TPacketType& packetType);
 			bool Get(TPacketHeader header, TPacketType* pPacketType);
 
-			bool CheckPacket(std::shared_ptr<CSocket> socket, TPacketHeader* packetHeader);
-			bool ProcessRecv(std::shared_ptr<CSocket> socket);
-			bool OnProcessRecv(std::shared_ptr<CSocket> socket);
-			void RecvErrorPacket(std::shared_ptr<CSocket> socket, int header);
+			bool CheckPacket(CSocket* socket, TPacketHeader* packetHeader);
+			bool ProcessRecv(CAbstractPeer* peer);
+			bool OnProcessRecv(CAbstractPeer* peer);
+			void RecvErrorPacket(CSocket* socket, int header);
 
 		protected:
 			enum

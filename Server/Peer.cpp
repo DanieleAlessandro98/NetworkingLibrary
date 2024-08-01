@@ -44,6 +44,14 @@ void CPeer::SetPhase(int phase)
 	}
 }
 
+bool CPeer::AnalyzePacket(Net::TPacketHeader header)
+{
+	if (m_iPhase == PHASE_CLOSE)
+		return false;
+
+	return m_packetHandler->Analyze(this, header);
+}
+
 void CPeer::Setup(std::shared_ptr<Net::CSocket> socket, int handleCount, uint32_t handshake)
 {
 	m_socket = socket;

@@ -21,7 +21,7 @@ namespace Net
 			virtual void OnSocketListening() = 0;
 			virtual bool CanAcceptNewConnection() = 0;
 			virtual void OnConnectClient(std::shared_ptr<CSocket> newClientSocket) = 0;
-			virtual void OnDisconnectClient(std::shared_ptr<CSocket> client_data) = 0;
+			virtual void OnDisconnectClient(CAbstractPeer* peer) = 0;
 			virtual void DisconnectAll() = 0;
 
 		protected:

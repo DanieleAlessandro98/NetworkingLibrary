@@ -30,7 +30,7 @@ namespace Net
 		return true;
 	}
 
-    bool CAbstractPacketManager::CheckPacket(std::shared_ptr<CSocket> socket, TPacketHeader* packetHeader)
+    bool CAbstractPacketManager::CheckPacket(CSocket* socket, TPacketHeader* packetHeader)
     {
         if (!socket)
             return false;
@@ -98,8 +98,12 @@ namespace Net
         return true;
     }
 
-    bool CAbstractPacketManager::ProcessRecv(std::shared_ptr<CSocket> socket)
+    bool CAbstractPacketManager::ProcessRecv(CAbstractPeer* peer)
     {
+        if (!peer)
+            return false;
+
+        const auto socket = peer->GetSocket();
         if (!socket)
             return false;
 
@@ -110,12 +114,16 @@ namespace Net
         if (!dataStream->ProcessRecv(socket->GetSocket()))
             return false;
 
-        return OnProcessRecv(socket);
+        return OnProcessRecv(peer);
     }
 
-    bool CAbstractPacketManager::OnProcessRecv(std::shared_ptr<CSocket> socket)
+    bool CAbstractPacketManager::OnProcessRecv(CAbstractPeer* peer)
     {
-        if (!entity)
+        if (!peer)
+            return false;
+
+        const auto socket = peer->GetSocket();
+        if (!socket)
             return false;
 
         if (!socket)
@@ -129,7 +137,7 @@ namespace Net
             if (!CheckPacket(socket, &header))
                 break;
 
-            //ret = entity->Analyze(header, socket);
+            ret = peer->AnalyzePacket(header);
         }
 
         if (!ret)
@@ -138,7 +146,7 @@ namespace Net
         return ret;
     }
 
-    void CAbstractPacketManager::RecvErrorPacket(std::shared_ptr<CSocket> socket, int header)
+    void CAbstractPacketManager::RecvErrorPacket(CSocket* socket, int header)
     {
         if (!socket)
             return;

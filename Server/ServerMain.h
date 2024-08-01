@@ -18,7 +18,7 @@ class ServerMain : public Net::CAbstractServer
 		void OnSocketListening() override;
 		bool CanAcceptNewConnection() override;
 		void OnConnectClient(std::shared_ptr<Net::CSocket> newClientSocket) override;
-		void OnDisconnectClient(std::shared_ptr<Net::CSocket> client_data) override;
+		void OnDisconnectClient(Net::CAbstractPeer* peer) override;
 		void DisconnectAll() override;
 
 		void DisconnectFirstPeer();

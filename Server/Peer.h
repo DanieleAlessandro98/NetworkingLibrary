@@ -15,6 +15,7 @@ class CPeer : Net::CAbstractPeer
 
 		void SetPhase(int phase) override;
 		Net::CSocket* GetSocket() override { return m_socket.get(); }
+		bool AnalyzePacket(Net::TPacketHeader header) override;
 
 		void Setup(std::shared_ptr<Net::CSocket> socket, int handleCount, uint32_t handshake);
 		void StartHandshake(uint32_t handshake);

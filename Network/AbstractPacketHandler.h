@@ -12,7 +12,7 @@ namespace Net
             virtual ~CAbstractPacketServerHandler() = 0;
 
         public:
-            virtual void Analyze(CAbstractPeer* peer, TPacketHeader header) = 0;
+            virtual bool Analyze(CAbstractPeer* peer, TPacketHeader header) = 0;
     };
 
     class CAbstractPacketClientHandler
@@ -22,7 +22,7 @@ namespace Net
             virtual ~CAbstractPacketClientHandler() = 0;
 
         public:
-            virtual void Analyze(TPacketHeader header) = 0;
+            virtual bool Analyze(TPacketHeader header) = 0;
     };
 
     inline CAbstractPacketServerHandler::~CAbstractPacketServerHandler() {}
