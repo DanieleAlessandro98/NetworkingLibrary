@@ -7,7 +7,7 @@ using namespace Net;
 
 ServerMain::ServerMain()
 {
-	m_packetManager = std::make_shared<CServerPacketManager>(this);
+	m_packetManager = std::make_shared<CServerPacketManager>();
 }
 
 void ServerMain::OnSocketListening()

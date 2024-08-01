@@ -4,9 +4,8 @@
 
 using namespace Net;
 
-CServerPacketManager::CServerPacketManager(Net::AbstractEntity* entity)
+CServerPacketManager::CServerPacketManager()
 {
-	this->entity = entity;
 	__LoadPacketHeaders();
 }
 

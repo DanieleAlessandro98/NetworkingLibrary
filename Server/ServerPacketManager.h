@@ -5,7 +5,7 @@
 class CServerPacketManager : public Net::CAbstractServerPacketManager
 {
 	public:
-		CServerPacketManager(Net::AbstractEntity* entity);
+		CServerPacketManager();
 		~CServerPacketManager() = default;
 
 	private:
