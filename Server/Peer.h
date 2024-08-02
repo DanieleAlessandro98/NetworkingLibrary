@@ -7,7 +7,7 @@
 #include <Network/AbstractPacketHandler.h>
 #include "ServerHandshake.h"
 
-class CPeer : Net::CAbstractPeer
+class CPeer : public Net::CAbstractPeer
 {
 	public:
 		CPeer(std::shared_ptr<Net::SocketWatcher> serverWatcher);
