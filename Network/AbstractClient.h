@@ -5,7 +5,7 @@
 
 namespace Net
 {
-	class CAbstractClient : public AbstractEntity
+	class CAbstractClient : public AbstractEntity, public CAbstractPacketBaseHandler
 	{
 		public:
 			CAbstractClient();
@@ -14,6 +14,7 @@ namespace Net
 			bool Initialize(const char* c_szAddr, int port) override;
 			void Process() override;
 			void Shutdown() override;
+			Net::CSocket* GetSocket() override { return connectSocket.get(); }
 
 			bool IsConnected();
 

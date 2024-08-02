@@ -1,10 +1,23 @@
 #pragma once
 
-#include "AbstractPeer.h"
+#include "Socket.h"
 #include "PacketDefinition.h"
 
 namespace Net
 {
+    class CAbstractPeer;
+
+    class CAbstractPacketBaseHandler
+    {
+        public:
+            CAbstractPacketBaseHandler() = default;
+            virtual ~CAbstractPacketBaseHandler() = 0;
+
+        public:
+            virtual CSocket* GetSocket() = 0;
+            virtual bool AnalyzePacket(TPacketHeader header) = 0;
+    };
+
     class CAbstractPacketServerHandler
     {
         public:
@@ -25,6 +38,7 @@ namespace Net
             virtual bool Analyze(TPacketHeader header) = 0;
     };
 
+    inline CAbstractPacketBaseHandler::~CAbstractPacketBaseHandler() {}
     inline CAbstractPacketServerHandler::~CAbstractPacketServerHandler() {}
     inline CAbstractPacketClientHandler::~CAbstractPacketClientHandler() {}
 }

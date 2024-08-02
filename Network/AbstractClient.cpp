@@ -108,14 +108,14 @@ namespace Net
 			}
 		}
 
-		//if (FD_ISSET(connectSocket->GetSocket(), &readfds))
-		//{
-		//	if (!m_packetManager->ProcessRecv(connectSocket))
-		//	{
-		//		OnDisconnect();
-		//		return;
-		//	}
-		//}
+		if (FD_ISSET(connectSocket->GetSocket(), &readfds))
+		{
+			if (!m_packetManager->ProcessRecv(this))
+			{
+				OnDisconnect();
+				return;
+			}
+		}
 	}
 
 	void CAbstractClient::Shutdown()

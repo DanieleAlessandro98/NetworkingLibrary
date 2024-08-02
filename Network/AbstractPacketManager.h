@@ -33,8 +33,8 @@ namespace Net
 			bool Get(TPacketHeader header, TPacketType* pPacketType);
 
 			bool CheckPacket(CSocket* socket, TPacketHeader* packetHeader);
-			bool ProcessRecv(CAbstractPeer* peer);
-			bool OnProcessRecv(CAbstractPeer* peer);
+			bool ProcessRecv(CAbstractPacketBaseHandler* packetHandler);
+			bool OnProcessRecv(CAbstractPacketBaseHandler* packetHandler);
 			void RecvErrorPacket(CSocket* socket, int header);
 
 		protected:
@@ -44,7 +44,6 @@ namespace Net
 				DYNAMIC_SIZE_PACKET = true,
 			};
 
-			AbstractEntity* entity;
 			std::map<TPacketHeader, TPacketType> m_packetHeaderMap;
 
 		private:

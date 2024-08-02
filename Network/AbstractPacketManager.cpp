@@ -98,12 +98,12 @@ namespace Net
         return true;
     }
 
-    bool CAbstractPacketManager::ProcessRecv(CAbstractPeer* peer)
+    bool CAbstractPacketManager::ProcessRecv(CAbstractPacketBaseHandler* packetHandler)
     {
-        if (!peer)
+        if (!packetHandler)
             return false;
 
-        const auto socket = peer->GetSocket();
+        const auto socket = packetHandler->GetSocket();
         if (!socket)
             return false;
 
@@ -114,15 +114,15 @@ namespace Net
         if (!dataStream->ProcessRecv(socket->GetSocket()))
             return false;
 
-        return OnProcessRecv(peer);
+        return OnProcessRecv(packetHandler);
     }
 
-    bool CAbstractPacketManager::OnProcessRecv(CAbstractPeer* peer)
+    bool CAbstractPacketManager::OnProcessRecv(CAbstractPacketBaseHandler* packetHandler)
     {
-        if (!peer)
+        if (!packetHandler)
             return false;
 
-        const auto socket = peer->GetSocket();
+        const auto socket = packetHandler->GetSocket();
         if (!socket)
             return false;
 
@@ -137,7 +137,7 @@ namespace Net
             if (!CheckPacket(socket, &header))
                 break;
 
-            ret = peer->AnalyzePacket(header);
+            ret = packetHandler->AnalyzePacket(header);
         }
 
         if (!ret)

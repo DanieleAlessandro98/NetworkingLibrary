@@ -7,7 +7,7 @@ using namespace Net;
 
 Client::Client()
 {
-	m_packetManager = std::make_shared<CClientPacketManager>(this);
+	m_packetManager = std::make_shared<CClientPacketManager>();
 }
 
 void Client::OnSocketCreated()
@@ -28,4 +28,9 @@ void Client::OnConnectFail()
 void Client::OnDisconnect()
 {
 	std::cout << "OnRemoteDisconnect" << std::endl;
+}
+
+bool Client::AnalyzePacket(Net::TPacketHeader header)
+{
+	return true;
 }

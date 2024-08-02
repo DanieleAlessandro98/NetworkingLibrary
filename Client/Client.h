@@ -17,4 +17,6 @@ class Client : public Net::CAbstractClient
 		void OnConnect() override;
 		void OnConnectFail() override;
 		void OnDisconnect() override;
+
+		bool AnalyzePacket(Net::TPacketHeader header) override;
 };
