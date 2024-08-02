@@ -19,4 +19,7 @@ class Client : public Net::CAbstractClient
 		void OnDisconnect() override;
 
 		bool AnalyzePacket(Net::TPacketHeader header) override;
+
+		bool RecvHandshake();
+		void SendHandshake(uint32_t handshake, uint32_t time, long delta);
 };

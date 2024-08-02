@@ -19,6 +19,10 @@ class CPeer : Net::CAbstractPeer
 
 		void Setup(std::shared_ptr<Net::CSocket> socket, int handleCount, uint32_t handshake);
 		void StartHandshake(uint32_t handshake);
+		void SendHandshake(uint32_t curTime, long delta);
+		bool HandshakeProcess(uint32_t time, long delta);
+
+		void Packet(const void* c_pvData, int iSize);
 
 		int GetHandle() const { return m_dwHandle; }
 		uint32_t GetHandshake() const { return m_dwHandshake; }

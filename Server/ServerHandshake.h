@@ -9,4 +9,6 @@ class ServerHandshake : public Net::CAbstractPacketServerHandler
 		~ServerHandshake() = default;
 
 		bool Analyze(Net::CAbstractPeer* peer, Net::TPacketHeader header) override;
+
+		bool RecvHandshake(Net::CAbstractPeer* abstractPeer);
 };
