@@ -157,13 +157,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractClient.h" />
-    <ClInclude Include="AbstractClientPacketManager.h" />
-    <ClInclude Include="AbstractEntity.h" />
+    <ClInclude Include="AbstractComponentsFactory.h" />
+    <ClInclude Include="AbstractEntity.hpp" />
     <ClInclude Include="AbstractPacketHandler.h" />
     <ClInclude Include="AbstractPacketManager.h" />
     <ClInclude Include="AbstractPeer.h" />
     <ClInclude Include="AbstractServer.h" />
-    <ClInclude Include="AbstractServerPacketManager.h" />
     <ClInclude Include="DataStream.h" />
     <ClInclude Include="Definition.h" />
     <ClInclude Include="NetAddress.h" />

@@ -56,5 +56,8 @@
     <ClInclude Include="ServerHandshake.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="ServerComponentsFactory.hpp">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

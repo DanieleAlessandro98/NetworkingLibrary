@@ -166,6 +166,7 @@
   <ItemGroup>
     <ClInclude Include="Peer.h" />
     <ClInclude Include="PeerManager.h" />
+    <ClInclude Include="ServerComponentsFactory.hpp" />
     <ClInclude Include="ServerHandshake.h" />
     <ClInclude Include="ServerMain.h" />
     <ClInclude Include="ServerPacketManager.h" />

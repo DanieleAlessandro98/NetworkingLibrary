@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Network/AbstractClientPacketManager.h>
+#include <Network/AbstractPacketManager.h>
 
-class CClientPacketManager : public Net::CAbstractClientPacketManager
+class CClientPacketManager : public Net::CAbstractPacketManager
 {
 	public:
 		CClientPacketManager();

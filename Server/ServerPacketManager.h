@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Network/AbstractServerPacketManager.h>
+#include <Network/AbstractPacketManager.h>
 
-class CServerPacketManager : public Net::CAbstractServerPacketManager
+class CServerPacketManager : public Net::CAbstractPacketManager
 {
 	public:
 		CServerPacketManager();

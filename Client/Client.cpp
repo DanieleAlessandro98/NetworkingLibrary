@@ -2,12 +2,14 @@
 #include "Client.h"
 #include <iostream>
 #include <random>
+#include "ClientComponentsFactory.hpp"
 
 using namespace Net;
 
 Client::Client()
 {
-	m_packetManager = std::make_shared<CClientPacketManager>();
+	const auto factory = std::make_shared<CClientComponentsFactory>();
+	SetComponentsFactory(factory);
 }
 
 void Client::OnSocketCreated()

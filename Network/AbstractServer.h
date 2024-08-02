@@ -1,8 +1,8 @@
 #pragma once
 
-#include "AbstractEntity.h"
+#include "AbstractEntity.hpp"
 #include "SocketWatcher.h"
-#include "AbstractServerPacketManager.h"
+#include "AbstractPacketManager.h"
 
 namespace Net
 {
@@ -27,6 +27,6 @@ namespace Net
 		protected:
 			CSocket listenSocket;
 			std::shared_ptr<SocketWatcher> watcher;
-			std::shared_ptr<CAbstractServerPacketManager> m_packetManager;
+			std::shared_ptr<CAbstractPacketManager> m_packetManager;
 	};
 }

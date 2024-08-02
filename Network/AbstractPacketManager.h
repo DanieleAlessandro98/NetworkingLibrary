@@ -4,7 +4,7 @@
 #include <memory>
 #include "PacketDefinition.h"
 #include "Socket.h"
-#include "AbstractEntity.h"
+#include "AbstractEntity.hpp"
 #include "AbstractPeer.h"
 
 namespace Net
@@ -27,6 +27,8 @@ namespace Net
 		public:
 			CAbstractPacketManager() = default;
 			virtual ~CAbstractPacketManager() = default;
+
+			virtual void __LoadPacketHeaders() = 0;
 
 			void Set(PacketCGHeader header, const TPacketType& packetType);
 			void Set(PacketGCHeader header, const TPacketType& packetType);

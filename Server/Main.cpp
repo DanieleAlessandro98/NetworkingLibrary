@@ -6,8 +6,6 @@
 
 int main()
 {
-	ServerMain server;
-
 	if (!Net::CNetDevice::Create())
 	{
 		std::cerr << "Failed to create winsock" << std::endl;
@@ -15,33 +13,38 @@ int main()
 		return 0;
 	}
 
-	if (server.Initialize("localhost", 8080))
+	ServerMain server;
+	if (!server.Initialize("localhost", 8080))
 	{
-		while (true)
+		std::cerr << "Failed to initialize server" << std::endl;
+		system("pause");
+		return 0;
+	}
+
+	while (true)
+	{
+		server.Process();
+
+		if (_kbhit())
 		{
-			server.Process();
+			std::string input;
 
-			if (_kbhit())
+			char ch = _getch();
+			while (ch != '\r')
 			{
-				std::string input;
-
-				char ch = _getch();
-				while (ch != '\r')
-				{
-					input += ch;
-					std::cout << ch;
-					ch = _getch();
-				}
-
-				std::cout << std::endl;
-
-				if (input == "dall")
-					server.DisconnectAll();
-				if (input == "dfirst")
-					server.DisconnectFirstPeer();
-				else if (input == "quit")
-					break;
+				input += ch;
+				std::cout << ch;
+				ch = _getch();
 			}
+
+			std::cout << std::endl;
+
+			if (input == "dall")
+				server.DisconnectAll();
+			if (input == "dfirst")
+				server.DisconnectFirstPeer();
+			else if (input == "quit")
+				break;
 		}
 	}
 

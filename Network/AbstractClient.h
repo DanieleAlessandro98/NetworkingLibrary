@@ -1,7 +1,8 @@
 #pragma once
 
-#include "AbstractEntity.h"
-#include "AbstractClientPacketManager.h"
+#include "AbstractEntity.hpp"
+#include "AbstractPacketHandler.h"
+#include "AbstractPacketManager.h"
 
 namespace Net
 {
@@ -27,6 +28,6 @@ namespace Net
 			std::shared_ptr<Net::CSocket> connectSocket;
 			bool isConnected;
 			time_t	m_connectLimitTime;
-			std::shared_ptr<CAbstractClientPacketManager> m_packetManager;
+			std::shared_ptr<CAbstractPacketManager> m_packetManager;
 	};
 }

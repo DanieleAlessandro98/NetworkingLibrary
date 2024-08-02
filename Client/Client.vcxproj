@@ -162,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h" />
+    <ClInclude Include="ClientComponentsFactory.hpp" />
     <ClInclude Include="ClientPacketManager.h" />
     <ClInclude Include="StdAfx.h" />
   </ItemGroup>

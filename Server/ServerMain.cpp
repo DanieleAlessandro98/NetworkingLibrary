@@ -2,12 +2,14 @@
 #include "ServerMain.h"
 #include <iostream>
 #include <Network/PacketDefinition.h>
+#include "ServerComponentsFactory.hpp"
 
 using namespace Net;
 
 ServerMain::ServerMain()
 {
-	m_packetManager = std::make_shared<CServerPacketManager>();
+	const auto factory = std::make_shared<CServerComponentsFactory>();
+	SetComponentsFactory(factory);
 }
 
 void ServerMain::OnSocketListening()

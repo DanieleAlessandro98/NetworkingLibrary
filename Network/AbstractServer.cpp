@@ -30,6 +30,14 @@ namespace Net
 				std::cerr << "Failed to listen socket" << std::endl;
 				return false;
 			}
+
+			if (m_componentsFactory)
+				m_packetManager = m_componentsFactory->CreatePacketManager();
+			else
+			{
+				std::cerr << "ComponentsFactory not set" << std::endl;
+				return false;
+			}
 		}
 		catch (NetException ex)
 		{

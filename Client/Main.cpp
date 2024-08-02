@@ -6,8 +6,6 @@
 
 int main()
 {
-    Client client;
-
     if (!Net::CNetDevice::Create())
     {
         std::cerr << "Failed to create winsock" << std::endl;
@@ -15,28 +13,33 @@ int main()
         return 0;
     }
 
-    if (client.Initialize("localhost", 8080))
-    {
-        while (true)
-        {
-            client.Process();
+	Client client;
+	if (!client.Initialize("localhost", 8080))
+	{
+		std::cerr << "Failed to initialize client" << std::endl;
+		system("pause");
+		return 0;
+	}
 
-            if (client.IsConnected() && _kbhit())
-            {
-                std::string input;
+	while (true)
+	{
+		client.Process();
 
-                char ch = _getch();
-                while (ch != '\r')
-                {
-                    input += ch;
-                    std::cout << ch;
-                    ch = _getch();
-                }
+		if (client.IsConnected() && _kbhit())
+		{
+			std::string input;
 
-                std::cout << std::endl;
-            }
-        }
-    }
+			char ch = _getch();
+			while (ch != '\r')
+			{
+				input += ch;
+				std::cout << ch;
+				ch = _getch();
+			}
+
+			std::cout << std::endl;
+		}
+	}
 
     Net::CNetDevice::Destroy();
 
