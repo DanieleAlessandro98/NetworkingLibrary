@@ -27,6 +27,7 @@ namespace Net
 		public:
 			CAbstractPacketManager() = default;
 			virtual ~CAbstractPacketManager() = default;
+			void Initialize();
 
 			virtual void __LoadPacketHeaders() = 0;
 

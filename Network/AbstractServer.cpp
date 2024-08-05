@@ -34,6 +34,8 @@ namespace Net
 			if (m_componentsFactory)
 			{
 				m_packetManager = m_componentsFactory->CreatePacketManager();
+				m_packetManager->Initialize();
+
 				m_peerManager = m_componentsFactory->CreatePeerManager();
 			}
 			else

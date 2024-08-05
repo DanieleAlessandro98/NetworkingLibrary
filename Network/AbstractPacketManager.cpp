@@ -4,6 +4,11 @@
 
 namespace Net
 {
+    void CAbstractPacketManager::Initialize()
+    {
+        __LoadPacketHeaders();
+	}
+
 	void CAbstractPacketManager::Set(PacketCGHeader header, const TPacketType& packetType)
 	{
 		Set(static_cast<TPacketHeader>(header), packetType);

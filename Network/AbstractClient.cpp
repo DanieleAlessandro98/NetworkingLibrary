@@ -41,7 +41,10 @@ namespace Net
 			}
 
 			if (m_componentsFactory)
+			{
 				m_packetManager = m_componentsFactory->CreatePacketManager();
+				m_packetManager->Initialize();
+			}
 			else
 			{
 				std::cerr << "ComponentsFactory not set" << std::endl;

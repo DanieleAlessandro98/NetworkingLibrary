@@ -5,7 +5,7 @@
 class CClientPacketManager : public Net::CAbstractPacketManager
 {
 	public:
-		CClientPacketManager();
+		CClientPacketManager() = default;
 		~CClientPacketManager() = default;
 
 	private:
