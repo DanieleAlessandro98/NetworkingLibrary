@@ -16,6 +16,7 @@ class ServerMain : public Net::CAbstractServer
 		ServerMain();
 		~ServerMain() = default;
 
+		bool Initialize(const char* c_szAddr, int port) override;
 		void OnSocketListening() override;
 		bool CanAcceptNewConnection() override;
 		void OnConnectClient(std::shared_ptr<Net::CSocket> newClientSocket) override;
