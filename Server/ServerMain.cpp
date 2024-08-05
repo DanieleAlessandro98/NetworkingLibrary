@@ -8,8 +8,10 @@ using namespace Net;
 
 ServerMain::ServerMain()
 {
-	const auto factory = std::make_shared<CServerComponentsFactory>();
-	SetComponentsFactory(factory);
+	SetComponentsFactory(CreateComponentsFactory<CServerComponentsFactory>());
+
+	m_packetManager = SetPacketManager<ServerPacketManagerType>();
+	m_peerManager = SetPeerManager<ServerPeerManagerType>();
 }
 
 void ServerMain::OnSocketListening()
@@ -49,7 +51,7 @@ void ServerMain::DisconnectFirstPeer()
 {
 	if (m_peerManager)
 	{
-		auto firstPeer = dynamic_cast<CPeerManager*>(m_peerManager.get())->GetFirstPeer();
+		auto firstPeer = m_peerManager->GetFirstPeer();
 		if (firstPeer)
 			m_peerManager->DestroyDesc(firstPeer.get());
 	}

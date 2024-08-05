@@ -8,8 +8,7 @@ using namespace Net;
 
 Client::Client()
 {
-	const auto factory = std::make_shared<CClientComponentsFactory>();
-	SetComponentsFactory(factory);
+	SetComponentsFactory(CreateComponentsFactory<CClientComponentsFactory>());
 }
 
 void Client::OnSocketCreated()

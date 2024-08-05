@@ -8,6 +8,7 @@
 #include <memory>
 #include <Network/PacketDefinition.h>
 #include <Server/PeerManager.h>
+#include "ServerComponentsFactory.hpp"
 
 class ServerMain : public Net::CAbstractServer
 {
@@ -22,4 +23,8 @@ class ServerMain : public Net::CAbstractServer
 		void DisconnectAll() override;
 
 		void DisconnectFirstPeer();
+
+	private:
+		ServerPacketManagerType* m_packetManager;
+		ServerPeerManagerType* m_peerManager;
 };

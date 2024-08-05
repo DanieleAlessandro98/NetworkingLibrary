@@ -9,6 +9,12 @@ namespace Net
     class CAbstractPacketManager;
     class CAbstractPeerManager;
 
+    template<typename T>
+    std::shared_ptr<T> CreateComponentsFactory()
+    {
+        return std::make_shared<T>();
+    }
+
     class AbstractClientComponentsFactory
     {
         public:

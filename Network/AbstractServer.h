@@ -34,7 +34,13 @@ namespace Net
 			std::unique_ptr<CAbstractPeerManager> m_peerManager;
 
 			template <typename T>
-			T* GetSpecificPeerManager()
+			T* SetPacketManager()
+			{
+				return dynamic_cast<T*>(m_packetManager.get());
+			}
+
+			template <typename T>
+			T* SetPeerManager()
 			{
 				return dynamic_cast<T*>(m_peerManager.get());
 			}
