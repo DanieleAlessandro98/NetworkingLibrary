@@ -24,8 +24,8 @@ class CPeer : public Net::CAbstractPeer
 
 		void Packet(const void* c_pvData, int iSize);
 
-		int GetHandle() const { return m_dwHandle; }
-		uint32_t GetHandshake() const { return m_dwHandshake; }
+		uint32_t GetHandle() const override { return m_dwHandle; }
+		uint32_t GetHandshake() const override { return m_dwHandshake; }
 		bool IsPhase(int phase) const { return m_iPhase == phase ? true : false; }
 
 	private:

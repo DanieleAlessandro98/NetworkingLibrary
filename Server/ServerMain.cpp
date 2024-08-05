@@ -14,7 +14,6 @@ ServerMain::ServerMain()
 
 void ServerMain::OnSocketListening()
 {
-	m_peerManager = std::make_unique<CPeerManager>();
 	std::cout << "Socket Listening..." << std::endl;
 }
 
@@ -50,7 +49,7 @@ void ServerMain::DisconnectFirstPeer()
 {
 	if (m_peerManager)
 	{
-		auto firstPeer = m_peerManager->GetFirstPeer();
+		auto firstPeer = dynamic_cast<CPeerManager*>(m_peerManager.get())->GetFirstPeer();
 		if (firstPeer)
 			m_peerManager->DestroyDesc(firstPeer.get());
 	}

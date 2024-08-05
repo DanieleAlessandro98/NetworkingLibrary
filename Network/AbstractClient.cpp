@@ -131,6 +131,11 @@ namespace Net
 		connectSocket->Close();
 	}
 
+	void CAbstractClient::SetComponentsFactory(std::shared_ptr<AbstractClientComponentsFactory> factory)
+	{
+		m_componentsFactory = factory;
+	}
+
 	bool CAbstractClient::IsConnected()
 	{
 		return isConnected;

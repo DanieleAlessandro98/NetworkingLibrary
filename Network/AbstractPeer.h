@@ -17,6 +17,8 @@ namespace Net
             virtual ~CAbstractPeer() = 0;
 
             virtual void SetPhase(int phase) = 0;
+            virtual uint32_t GetHandle() const = 0;
+            virtual uint32_t GetHandshake() const = 0;
 
             void AddSocketToWatcher(int fd);
             void RemoveSocketToWatcher(int fd);

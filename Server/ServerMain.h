@@ -22,7 +22,4 @@ class ServerMain : public Net::CAbstractServer
 		void DisconnectAll() override;
 
 		void DisconnectFirstPeer();
-
-	private:
-		std::unique_ptr<CPeerManager> m_peerManager;
 };

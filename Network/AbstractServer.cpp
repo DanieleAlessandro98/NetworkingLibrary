@@ -32,7 +32,10 @@ namespace Net
 			}
 
 			if (m_componentsFactory)
+			{
 				m_packetManager = m_componentsFactory->CreatePacketManager();
+				m_peerManager = m_componentsFactory->CreatePeerManager();
+			}
 			else
 			{
 				std::cerr << "ComponentsFactory not set" << std::endl;
@@ -116,6 +119,11 @@ namespace Net
 					break;
 			}
 		}
+	}
+
+	void CAbstractServer::SetComponentsFactory(std::shared_ptr<AbstractServerComponentsFactory> factory)
+	{
+		m_componentsFactory = factory;
 	}
 
 	void CAbstractServer::HandleNewConnection()

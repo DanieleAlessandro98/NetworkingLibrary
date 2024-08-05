@@ -16,6 +16,7 @@ namespace Net
 			void Process() override;
 			void Shutdown() override;
 
+			void SetComponentsFactory(std::shared_ptr<AbstractServerComponentsFactory> factory);
 			void HandleNewConnection();
 
 			virtual void OnSocketListening() = 0;
@@ -26,7 +27,16 @@ namespace Net
 
 		protected:
 			CSocket listenSocket;
+
+			std::shared_ptr<AbstractServerComponentsFactory> m_componentsFactory;
 			std::shared_ptr<SocketWatcher> watcher;
 			std::shared_ptr<CAbstractPacketManager> m_packetManager;
+			std::unique_ptr<CAbstractPeerManager> m_peerManager;
+
+			template <typename T>
+			T* GetSpecificPeerManager()
+			{
+				return dynamic_cast<T*>(m_peerManager.get());
+			}
 	};
 }

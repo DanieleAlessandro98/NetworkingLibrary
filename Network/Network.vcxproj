@@ -147,6 +147,7 @@
     <ClCompile Include="AbstractClient.cpp" />
     <ClCompile Include="AbstractPacketManager.cpp" />
     <ClCompile Include="AbstractPeer.cpp" />
+    <ClCompile Include="AbstractPeerManager.cpp" />
     <ClCompile Include="AbstractServer.cpp" />
     <ClCompile Include="DataStream.cpp" />
     <ClCompile Include="NetAddress.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="AbstractPacketHandler.h" />
     <ClInclude Include="AbstractPacketManager.h" />
     <ClInclude Include="AbstractPeer.h" />
+    <ClInclude Include="AbstractPeerManager.h" />
     <ClInclude Include="AbstractServer.h" />
     <ClInclude Include="DataStream.h" />
     <ClInclude Include="Definition.h" />
