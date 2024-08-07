@@ -3,6 +3,7 @@
 #include <iostream>
 #include <random>
 #include "ClientComponentsFactory.hpp"
+#include "Network/PacketIO.hpp"
 
 using namespace Net;
 
@@ -55,12 +56,8 @@ bool Client::RecvHandshake()
 	if (!connectSocket)
 		return false;
 
-	const auto dataStream = connectSocket->GetDataStream();
-	if (!dataStream)
-		return false;
-
 	TPacketGCHandshake handshakePacket;
-	if (!dataStream->Recv(sizeof(handshakePacket), &handshakePacket))
+	if (!CPacketIO::ReadPacketData(connectSocket.get(), handshakePacket))
 		return false;
 
 	std::cout << "Handshake Recv:" << handshakePacket.time << "\t" << handshakePacket.delta << std::endl;
@@ -72,20 +69,12 @@ bool Client::RecvHandshake()
 
 void Client::SendHandshake(uint32_t handshake, uint32_t time, long delta)
 {
-	if (!connectSocket)
-		return;
-
-	const auto dataStream = connectSocket->GetDataStream();
-	if (!dataStream)
-		return;
-
 	TPacketCGHandshake packet;
-
 	packet.handshake = handshake;
 	packet.time = time;
 	packet.delta = delta;
 
-	if (!dataStream->Send(sizeof(packet), &packet))
+	if (!CPacketIO::WritePacketData(GetSocket(), &packet, sizeof(packet)))
 	{
 		std::cerr << "Handshake not sended" << std::endl;
 		return;

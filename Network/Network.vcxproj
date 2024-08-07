@@ -171,6 +171,7 @@
     <ClInclude Include="NetDevice.h" />
     <ClInclude Include="NetException.h" />
     <ClInclude Include="PacketDefinition.h" />
+    <ClInclude Include="PacketIO.hpp" />
     <ClInclude Include="Socket.h" />
     <ClInclude Include="SocketWatcher.h" />
     <ClInclude Include="StdAfx.h" />

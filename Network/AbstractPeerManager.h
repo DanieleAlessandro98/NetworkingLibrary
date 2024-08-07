@@ -28,9 +28,18 @@ namespace Net
             int m_iHandleCount;
             bool m_bDestroyed;
 
-        private:
-            uint32_t GenerateCRC32(const char* buf, size_t len);
-            uint32_t GenerateRandomNumber();
-            uint32_t GetGlobalTime();
+        public:
+            template<typename T>
+            static T* ValidPeer(CAbstractPeer* abstractPeer)
+            {
+                if (!abstractPeer)
+                    return nullptr;
+
+                auto* peer = static_cast<T*>(abstractPeer);
+                if (!peer)
+                    return nullptr;
+
+                return peer;
+            }
     };
 }

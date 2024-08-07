@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "AbstractPeer.h"
 #include <cassert>
+#include "PacketIO.hpp"
 
 namespace Net
 {
@@ -74,14 +75,7 @@ namespace Net
 		if (m_iPhase == PHASE_CLOSE)
 			return;
 
-		if (!m_socket)
-			return;
-
-		const auto dataStream = m_socket->GetDataStream();
-		if (!dataStream)
-			return;
-
-		if (!dataStream->Send(iSize, c_pvData))
+		if (!CPacketIO::WritePacketData(GetSocket(), c_pvData, iSize))
 			return;
 
 		m_serverWatcher->add_fd(m_socket->GetSocket(), this, EFdwatch::FDW_WRITE, true);
