@@ -113,6 +113,7 @@ namespace Net
 				int error = WSAGetLastError();
 				if (error != WSAEWOULDBLOCK)
 				{
+					isConnected = false;
 					OnDisconnect();
 					return;
 				}
@@ -123,6 +124,7 @@ namespace Net
 		{
 			if (!m_packetManager->ProcessRecv(this))
 			{
+				isConnected = false;
 				OnDisconnect();
 				return;
 			}

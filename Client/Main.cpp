@@ -25,7 +25,10 @@ int main()
 	{
 		client.Process();
 
-		if (client.IsConnected() && _kbhit())
+		if (!client.IsConnected())
+			break;
+
+		if (_kbhit())
 		{
 			std::string input;
 
