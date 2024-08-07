@@ -142,7 +142,7 @@ namespace Net
 			return;
 		}
 
-		if (!CanAcceptNewConnection())
+		if (!m_peerManager->CanAcceptNewConnection())
 		{
 			std::cerr << "max connection reached. MAX_ALLOW_USER = %d" << SERVER_MAX_INCOMING_CONNECTIONS << std::endl;
 			newClientSocket->Close();
