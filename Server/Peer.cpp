@@ -1,32 +1,6 @@
 #include "StdAfx.h"
 #include "Peer.h"
-
-void gettimeofday(struct timeval* t, struct timezone* dummy)
-{
-	uint32_t millisec = GetTickCount();
-
-	t->tv_sec = (millisec / 1000);
-	t->tv_usec = (millisec % 1000) * 1000;
-}
-
-static uint32_t get_boot_sec()
-{
-	static struct timeval tv_boot = { 0L, 0L };
-
-	if (tv_boot.tv_sec == 0)
-		gettimeofday(&tv_boot, NULL);
-
-	return tv_boot.tv_sec;
-}
-
-uint32_t get_dword_time()
-{
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-	//tv.tv_sec -= 1057699978;
-	tv.tv_sec -= get_boot_sec();
-	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
-}
+#include <Network/Utils.hpp>
 
 CPeer::CPeer(std::shared_ptr<Net::SocketWatcher> serverWatcher) :
 	Net::CAbstractPeer(serverWatcher)
@@ -43,7 +17,7 @@ void CPeer::OnSetupCompleted()
 
 void CPeer::StartHandshake()
 {
-	SendHandshake(get_dword_time(), 0);
+	SendHandshake(Net::Utils::GetTime(), 0);
 }
 
 void CPeer::SendHandshake(uint32_t curTime, long delta)

@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "AbstractPeerManager.h"
-#include <time.h>
+#include "Utils.hpp"
 
 namespace Net
 {
@@ -59,10 +59,10 @@ namespace Net
 
         auto generate_crc = [&]() -> uint32_t
         {
-            uint32_t val = GenerateRandomNumber();
+            uint32_t val = Utils::GenerateRandomNumber();
             *(uint32_t*)(crc_buf) = val;
-            *((uint32_t*)crc_buf + 1) = GetGlobalTime();
-            return GenerateCRC32(crc_buf, 8);
+            *((uint32_t*)crc_buf + 1) = Utils::GetGlobalTime();
+            return Utils::GenerateCRC32(crc_buf, 8);
         };
 
         uint32_t crc = generate_crc();
@@ -70,24 +70,5 @@ namespace Net
             crc = generate_crc();
 
         return crc;
-    }
-
-    uint32_t CAbstractPeerManager::GenerateCRC32(const char* buf, size_t len)
-    {
-        uint32_t crc = 0;
-        for (size_t i = 0; i < len; ++i) {
-            crc += static_cast<uint32_t>(buf[i]);
-        }
-        return crc;
-    }
-
-    uint32_t CAbstractPeerManager::GenerateRandomNumber()
-    {
-        return rand() % (1024 * 1024);
-    }
-
-    uint32_t CAbstractPeerManager::GetGlobalTime()
-    {
-        return static_cast<uint32_t>(time(0));
     }
 }

@@ -15,7 +15,7 @@ namespace Net
 			bool Initialize(const char* c_szAddr, int port) override;
 			void Process() override;
 			void Shutdown() override;
-			Net::CSocket* GetSocket() override { return connectSocket.get(); }
+			CSocket* GetSocket() override { return connectSocket.get(); }
 
 			void SetComponentsFactory(std::shared_ptr<AbstractClientComponentsFactory> factory);
 			bool IsConnected();
@@ -30,7 +30,7 @@ namespace Net
 			time_t	m_connectLimitTime;
 
 			std::shared_ptr<AbstractClientComponentsFactory> m_componentsFactory;
-			std::shared_ptr<Net::CSocket> connectSocket;
+			std::shared_ptr<CSocket> connectSocket;
 			std::shared_ptr<CAbstractPacketManager> m_packetManager;
 	};
 }
