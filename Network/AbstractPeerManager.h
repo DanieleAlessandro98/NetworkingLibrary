@@ -16,6 +16,7 @@ namespace Net
             virtual void AcceptPeer(std::shared_ptr<CSocket> socket, std::shared_ptr<SocketWatcher> serverWatcher) = 0;
 
             void DisconnectAll();
+            void DestroyClosed();
             void DestroyDesc(CAbstractPeer* d, bool skipMapErase = false);
 
         protected:

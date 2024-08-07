@@ -60,6 +60,8 @@ namespace Net
 
 	void CAbstractServer::Process()
 	{
+		m_peerManager->DestroyClosed();
+
 		int num_events = watcher->monitor(0);
 		if (num_events < 0)
 			return;
@@ -95,8 +97,8 @@ namespace Net
 				{
 					if (!m_packetManager->ProcessRecv(d))
 					{
+						d->SetPhase(PHASE_CLOSE);
 						OnDisconnectClient(d);
-						watcher->remove_fd(peerSocket->GetSocket());
 					}
 				}
 				break;
@@ -105,20 +107,21 @@ namespace Net
 				{
 					if (!dataStream->ProcessSend(peerSocket->GetSocket()))
 					{
+						d->SetPhase(PHASE_CLOSE);
 						OnDisconnectClient(d);
-						watcher->remove_fd(peerSocket->GetSocket());
 					}
 				}
 				break;
 
 				case FDW_EOF:
 				{
-					std::cerr << "SetPhase(PHASE_CLOSE)" << std::endl;
+					d->SetPhase(PHASE_CLOSE);
 				}
 				break;
 
 				default:
 					printf("watcher->get_event_status returned unknown %d", iRet);
+					d->SetPhase(PHASE_CLOSE);
 					break;
 			}
 		}

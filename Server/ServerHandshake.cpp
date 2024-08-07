@@ -39,6 +39,7 @@ bool ServerHandshake::RecvHandshake(CAbstractPeer* abstractPeer)
 	if (peer->GetHandshake() != handshakePacket.handshake)
 	{
 		std::cerr << "Invalid Handshake" << std::endl;
+		peer->SetPhase(PHASE_CLOSE);
 		return false;
 	}
 

@@ -36,6 +36,24 @@ namespace Net
         m_setHandshake.clear();
     }
 
+    void CAbstractPeerManager::DestroyClosed()
+    {
+        std::vector<uint32_t> toErase;
+        for (const auto& peer : m_mapPeer)
+        {
+            auto d = peer.second;
+            if (d->IsPhase(PHASE_CLOSE))
+                toErase.push_back(peer.first);
+        }
+
+        for (const auto& id : toErase)
+        {
+            auto it = m_mapPeer.find(id);
+            if (it != m_mapPeer.end())
+                DestroyDesc(it->second.get());
+        }
+    }
+
     void CAbstractPeerManager::DestroyDesc(CAbstractPeer* d, bool skipMapErase)
     {
         if (!d)
