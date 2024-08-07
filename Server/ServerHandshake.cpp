@@ -4,6 +4,7 @@
 #include "Peer.h"
 #include "PeerManager.h"
 #include <Network/PacketIO.hpp>
+#include "ServerComponentsFactory.hpp"
 
 using namespace Net;
 
@@ -28,7 +29,7 @@ bool ServerHandshake::Analyze(CAbstractPeer* peer, TPacketHeader header)
 
 bool ServerHandshake::RecvHandshake(CAbstractPeer* abstractPeer)
 {
-	auto* peer = CPeerManager::ValidPeer<CPeer>(abstractPeer);
+	auto* peer = CPeerManager::ValidPeer<ServerPeerType>(abstractPeer);
 	if (!peer)
 		return false;
 

@@ -15,6 +15,8 @@ void ServerMain::OnInitializeCompleted()
 {
 	m_packetManager = SetPacketManager<ServerPacketManagerType>();
 	m_peerManager = SetPeerManager<ServerPeerManagerType>();
+
+	std::cout << "Server initialize completed" << std::endl;
 }
 
 void ServerMain::OnSocketListening()
@@ -32,8 +34,7 @@ void ServerMain::OnConnectClient(std::shared_ptr<CSocket> newClientSocket)
 	if (!newClientSocket)
 		return;
 
-	m_peerManager->AcceptPeer(newClientSocket, watcher);
-	std::cout << "new client accepted" << std::endl;
+	std::cout << "New client accepted" << std::endl;
 }
 
 void ServerMain::OnDisconnectClient(Net::CAbstractPeer* peer)

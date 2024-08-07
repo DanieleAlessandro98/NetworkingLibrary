@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Peer.h"
 #include <Network/Utils.hpp>
+#include <iostream>
 
 CPeer::CPeer(std::shared_ptr<Net::SocketWatcher> serverWatcher) :
 	Net::CAbstractPeer(serverWatcher)
@@ -13,6 +14,8 @@ void CPeer::OnSetupCompleted()
 {
 	SetPhase(PHASE_HANDSHAKE);
 	StartHandshake();
+
+	std::cout << "Peer setup completed" << std::endl;
 }
 
 void CPeer::StartHandshake()

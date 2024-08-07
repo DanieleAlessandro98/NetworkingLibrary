@@ -10,7 +10,7 @@ class CPeerManager : public Net::CAbstractPeerManager
 		~CPeerManager() = default;
 
 		bool CanAcceptNewConnection() override;
-		void AcceptPeer(std::shared_ptr<Net::CSocket> socket, std::shared_ptr<Net::SocketWatcher> serverWatcher) override;
+		void OnPeerAccepted(Net::CAbstractPeer* newPeer) override;
 
 		std::shared_ptr<Net::CAbstractPeer> GetFirstPeer();
 };

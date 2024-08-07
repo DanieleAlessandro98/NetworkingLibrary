@@ -71,6 +71,24 @@ namespace Net
         --m_iPeerConnected;
     }
 
+    void CAbstractPeerManager::AcceptPeer(AbstractServerComponentsFactory* factory, std::shared_ptr<Net::CSocket> socket, std::shared_ptr<Net::SocketWatcher> serverWatcher)
+    {
+        if (!factory)
+            return;
+
+        auto newPeer = factory->CreatePeer(serverWatcher);
+        const auto handshake = CreateHandshake();
+
+        newPeer->Setup(socket, ++m_iHandleCount, handshake);
+
+        m_setHandshake.emplace(handshake);
+        m_mapPeer.emplace(newPeer->GetHandle(), newPeer);
+
+        ++m_iPeerConnected;
+
+        OnPeerAccepted(newPeer.get());
+    }
+
     uint32_t CAbstractPeerManager::CreateHandshake()
     {
         char crc_buf[8];

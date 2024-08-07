@@ -3,9 +3,12 @@
 #include "AbstractPeer.h"
 #include <unordered_map>
 #include <unordered_set>
+#include "AbstractComponentsFactory.h"
 
 namespace Net
 {
+    class AbstractServerComponentsFactory;
+
     class CAbstractPeerManager
     {
         public:
@@ -13,8 +16,9 @@ namespace Net
             ~CAbstractPeerManager();
 
             virtual bool CanAcceptNewConnection() = 0;
-            virtual void AcceptPeer(std::shared_ptr<CSocket> socket, std::shared_ptr<SocketWatcher> serverWatcher) = 0;
+            virtual void OnPeerAccepted(CAbstractPeer* newPeer) = 0;
 
+            void AcceptPeer(AbstractServerComponentsFactory* factory, std::shared_ptr<Net::CSocket> socket, std::shared_ptr<Net::SocketWatcher> serverWatcher);
             void DisconnectAll();
             void DestroyClosed();
             void DestroyDesc(CAbstractPeer* d, bool skipMapErase = false);

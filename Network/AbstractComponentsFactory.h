@@ -30,5 +30,6 @@ namespace Net
 
             virtual std::shared_ptr<CAbstractPacketManager> CreatePacketManager() = 0;
             virtual std::unique_ptr<CAbstractPeerManager> CreatePeerManager() = 0;
+            virtual std::shared_ptr<CAbstractPeer> CreatePeer(std::shared_ptr<SocketWatcher> serverWatcher) = 0;
     };
 }

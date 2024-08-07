@@ -2,6 +2,7 @@
 #include "PeerManager.h"
 #include <Network/Definition.h>
 #include <time.h>
+#include <iostream>
 
 bool CPeerManager::CanAcceptNewConnection()
 {
@@ -11,17 +12,12 @@ bool CPeerManager::CanAcceptNewConnection()
     return true;
 }
 
-void CPeerManager::AcceptPeer(std::shared_ptr<Net::CSocket> socket, std::shared_ptr<Net::SocketWatcher> serverWatcher)
+void CPeerManager::OnPeerAccepted(Net::CAbstractPeer* newPeer)
 {
-    auto newPeer = std::make_shared<CPeer>(serverWatcher);
-    const auto handshake = CreateHandshake();
+    if (!newPeer)
+        return;
 
-    newPeer->Setup(socket, ++m_iHandleCount, handshake);
-
-    m_setHandshake.emplace(handshake);
-    m_mapPeer.emplace(newPeer->GetHandle(), newPeer);
-
-    ++m_iPeerConnected;
+    std::cout << "New peer accepted" << std::endl;
 }
 
 std::shared_ptr<Net::CAbstractPeer> CPeerManager::GetFirstPeer()

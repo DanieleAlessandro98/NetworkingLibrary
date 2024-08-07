@@ -5,6 +5,7 @@
 
 using ServerPacketManagerType = CServerPacketManager;
 using ServerPeerManagerType = CPeerManager;
+using ServerPeerType = CPeer;
 
 class CServerComponentsFactory : public Net::AbstractServerComponentsFactory
 {
@@ -17,5 +18,10 @@ class CServerComponentsFactory : public Net::AbstractServerComponentsFactory
         std::unique_ptr<Net::CAbstractPeerManager> CreatePeerManager() override
         {
             return std::make_unique<ServerPeerManagerType>();
+        }
+
+        std::shared_ptr<Net::CAbstractPeer> CreatePeer(std::shared_ptr<Net::SocketWatcher> serverWatcher) override
+        {
+            return std::make_shared<ServerPeerType>(serverWatcher);
         }
 };

@@ -149,6 +149,7 @@ namespace Net
 			return;
 		}
 
+		m_peerManager->AcceptPeer(m_componentsFactory.get(), newClientSocket, watcher);
 		OnConnectClient(newClientSocket);
 	}
 
