@@ -9,9 +9,6 @@ using namespace Net;
 ServerMain::ServerMain()
 {
 	SetComponentsFactory(CreateComponentsFactory<CServerComponentsFactory>());
-
-	m_packetManager = nullptr;
-	m_peerManager = nullptr;
 }
 
 void ServerMain::OnInitializeCompleted()
