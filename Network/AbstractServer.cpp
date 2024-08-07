@@ -53,6 +53,7 @@ namespace Net
 		watcher = std::make_unique<SocketWatcher>(4096);
 		watcher->add_fd(listenSocket.GetSocket(), NULL, FDW_READ, false);
 
+		OnInitializeCompleted();
 		OnSocketListening();
 		return true;
 	}

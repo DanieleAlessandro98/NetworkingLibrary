@@ -19,6 +19,7 @@ namespace Net
 			void SetComponentsFactory(std::shared_ptr<AbstractServerComponentsFactory> factory);
 			void HandleNewConnection();
 
+			virtual void OnInitializeCompleted() = 0;
 			virtual void OnSocketListening() = 0;
 			virtual bool CanAcceptNewConnection() = 0;
 			virtual void OnConnectClient(std::shared_ptr<CSocket> newClientSocket) = 0;

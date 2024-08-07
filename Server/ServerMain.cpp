@@ -14,15 +14,10 @@ ServerMain::ServerMain()
 	m_peerManager = nullptr;
 }
 
-bool ServerMain::Initialize(const char* c_szAddr, int port)
+void ServerMain::OnInitializeCompleted()
 {
-	if (!CAbstractServer::Initialize(c_szAddr, port))
-		return false;
-
 	m_packetManager = SetPacketManager<ServerPacketManagerType>();
 	m_peerManager = SetPeerManager<ServerPeerManagerType>();
-
-	return true;
 }
 
 void ServerMain::OnSocketListening()
