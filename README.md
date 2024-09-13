@@ -23,7 +23,7 @@ NetworkingLibrary è una libreria in C++ progettata per gestire comunicazioni in
 - Programmazione orientata agli oggetti
 - Personalizzazione flessibile
 - Sistema di pacchetti estendibile
-- Monitoraggio dei socket tramite `Watcher`
+- Monitoraggio dei socket tramite [`Watcher`](./Network/README.md#socketwatcher)
 - Interfaccia intuitiva per operazioni di rete
 - Supporto per pacchetti con dimensioni sia statiche che dinamiche
 
@@ -42,7 +42,7 @@ NetworkingLibrary è una libreria in C++ progettata per gestire comunicazioni in
    - La comunicazione avviene tramite pacchetti, definiti da strutture dati contenenti le informazioni da scambiare.
 
 3. **Monitoraggio degli Eventi sui Socket**:
-   - Un `watcher`, basato sulla funzione `select()`, monitora gli eventi sui socket.
+   - Un [`Watcher`](./Network/README.md#socketwatcher), basato sulla funzione `select()`, monitora gli eventi sui socket.
 
 4. **Gestione del Flusso di Dati**:
    - Il flusso di dati è gestito tramite buffer dedicati: uno per l'invio e uno per la ricezione. I dati sono scritti nel buffer di invio e inviati attraverso il socket, mentre i dati ricevuti sono accumulati nel buffer di ricezione fino alla loro analisi.
