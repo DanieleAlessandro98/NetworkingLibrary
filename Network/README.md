@@ -30,7 +30,7 @@ Questa libreria offre una serie di classi e interfacce per gestire le connession
 
 
 
-### 3. **CAbstractServer**
+### 3. **AbstractServer**
 - **Descrizione:**
   Implementa un server di rete astratto. Gestisce le operazioni principali di rete, come la creazione del socket del server, l'accettazione delle connessioni e l'elaborazione degli eventi di rete.
 - **Metodi principali:**
@@ -41,7 +41,7 @@ Questa libreria offre una serie di classi e interfacce per gestire le connession
 
 
 
-### 4. **CAbstractPeer**
+### 4. **AbstractPeer**
 - **Descrizione:**
   Classe base astratta per la gestione dei peer.
 - **Metodi principali:**
