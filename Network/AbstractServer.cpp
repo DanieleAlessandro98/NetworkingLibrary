@@ -22,9 +22,6 @@ namespace Net
 				return false;
 			}
 
-			unsigned long val = 1;
-			ioctlsocket(listenSocket.GetSocket(), FIONBIO, &val);
-
 			if (!listenSocket.Listen(netAddress))
 			{
 				std::cerr << "Failed to listen socket" << std::endl;

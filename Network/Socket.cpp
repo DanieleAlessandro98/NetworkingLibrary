@@ -23,6 +23,9 @@ namespace Net
 		if (m_Socket == INVALID_SOCKET)
 			throw NetException("CSocket::Create - Error at socket(): %ld\n", WSAGetLastError());
 
+		if (!__SetReuse())
+			return false;
+
 		dataStream = std::make_shared<CDataStream>();
 
 		return true;
@@ -44,6 +47,9 @@ namespace Net
 		SOCKADDR_IN addrIn = address.GetAddrIn();
 		if (bind(m_Socket, (SOCKADDR*)&addrIn, sizeof(addrIn)) != 0)
 			throw NetException("CSocket::Bind - Error at bind(): %ld\n", WSAGetLastError());
+
+		if (!__SetNonBlock())
+			return false;
 
 		return true;
 	}
@@ -68,6 +74,9 @@ namespace Net
 		if (acceptSocket == INVALID_SOCKET)
 			throw NetException("CSocket::Accept - Error at accept(): %ld\n", WSAGetLastError());
 
+		if (!__SetNonBlock())
+			return false;
+
 		clientSocket = CSocket(acceptSocket);
 
 		return true;
@@ -81,6 +90,26 @@ namespace Net
 			if (WSAGetLastError() != WSAEWOULDBLOCK)
 				throw NetException("CSocket::Connect - Error at connect(): %ld\n", WSAGetLastError());
 		}
+
+		return true;
+	}
+
+	bool CSocket::__SetReuse()
+	{
+		int opt = 1;
+		if (setsockopt(m_Socket, SOL_SOCKET, SO_REUSEADDR, (const char*)&opt, sizeof(opt)) < 0)
+			return false;
+
+		return true;
+	}
+
+	bool CSocket::__SetNonBlock()
+	{
+		u_long mode = 1;
+
+		int result = ioctlsocket(m_Socket, FIONBIO, &mode);
+		if (result != NO_ERROR)
+			return false;
 
 		return true;
 	}

@@ -31,9 +31,6 @@ namespace Net
 				return false;
 			}
 
-			u_long arg = 1;
-			ioctlsocket(connectSocket->GetSocket(), FIONBIO, &arg);	// Non-blocking mode
-
 			if (!connectSocket->Connect(netAddress))
 			{
 				std::cerr << "Failed to connect to the server" << std::endl;

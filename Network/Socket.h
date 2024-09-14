@@ -25,6 +25,10 @@ namespace Net
 			SOCKET GetSocket() { return m_Socket; }
 			std::shared_ptr<CDataStream> GetDataStream() { return dataStream; }
 
+		protected:
+			bool __SetReuse();
+			bool __SetNonBlock();
+
 		private:
 			SOCKET m_Socket;
 			std::shared_ptr<CDataStream> dataStream;
