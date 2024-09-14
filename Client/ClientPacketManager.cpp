@@ -6,5 +6,5 @@ using namespace Net;
 
 void CClientPacketManager::__LoadPacketHeaders()
 {
-	Set(PacketGCHeader::HEADER_GC_HANDSHAKE, CAbstractPacketManager::TPacketType(sizeof(TPacketGCHandshake), STATIC_SIZE_PACKET));
+	Set(PacketSCHeader::HEADER_SC_HANDSHAKE, CAbstractPacketManager::TPacketType(sizeof(TPacketSCHandshake), STATIC_SIZE_PACKET));
 }

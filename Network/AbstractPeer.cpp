@@ -49,12 +49,12 @@ namespace Net
 
 	void CAbstractPeer::AddSocketToWatcher(int fd)
 	{
-		m_serverWatcher->add_fd(fd, this, EFdwatch::FDW_READ, false);
+		m_serverWatcher->add_socket(fd, this, ESockwatch::SOCKW_READ, false);
 	}
 
 	void CAbstractPeer::RemoveSocketToWatcher(int fd)
 	{
-		m_serverWatcher->remove_fd(fd);
+		m_serverWatcher->remove_socket(fd);
 	}
 
 	void CAbstractPeer::Setup(std::shared_ptr<CSocket> socket, int handleCount, uint32_t handshake)
@@ -78,7 +78,7 @@ namespace Net
 		if (!CPacketIO::WritePacketData(GetSocket(), c_pvData, iSize))
 			return;
 
-		m_serverWatcher->add_fd(m_socket->GetSocket(), this, EFdwatch::FDW_WRITE, true);
+		m_serverWatcher->add_socket(m_socket->GetSocket(), this, ESockwatch::SOCKW_WRITE, true);
 	}
 
 	bool CAbstractPeer::AnalyzePacket(TPacketHeader header)

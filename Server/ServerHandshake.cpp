@@ -12,9 +12,9 @@ bool ServerHandshake::Analyze(CAbstractPeer* peer, TPacketHeader header)
 {
 	bool ret = true;
 
-	switch (static_cast<PacketCGHeader>(header))
+	switch (static_cast<PacketCSHeader>(header))
 	{
-		case PacketCGHeader::HEADER_CG_HANDSHAKE:
+		case PacketCSHeader::HEADER_CS_HANDSHAKE:
 			ret = RecvHandshake(peer);
 			break;
 
@@ -33,7 +33,7 @@ bool ServerHandshake::RecvHandshake(CAbstractPeer* abstractPeer)
 	if (!peer)
 		return false;
 
-	TPacketCGHandshake handshakePacket;
+	TPacketCSHandshake handshakePacket;
 	if (!CPacketIO::ReadPacketData(peer->GetSocket(), handshakePacket))
 		return false;
 
@@ -44,14 +44,11 @@ bool ServerHandshake::RecvHandshake(CAbstractPeer* abstractPeer)
 		return false;
 	}
 
-	if (peer->IsPhase(PHASE_HANDSHAKE))
+	if (peer->HandshakeProcess(handshakePacket.time, handshakePacket.delta))
 	{
-		if (peer->HandshakeProcess(handshakePacket.time, handshakePacket.delta))
-		{
-			// New phase. Comment now
-			//peer->SetPhase(PHASE_AUTH);
-			std::cout << "Successful handshake" << std::endl;
-		}
+		// New phase. Comment now
+		//peer->SetPhase(PHASE_AUTH);
+		std::cout << "Successful handshake" << std::endl;
 	}
 
 	return true;

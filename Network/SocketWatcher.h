@@ -9,13 +9,13 @@ namespace Net
 {
     class CAbstractPeer;
 
-    enum EFdwatch
+    enum ESockwatch
     {
-        FDW_NONE = 0,
-        FDW_READ = 1,
-        FDW_WRITE = 2,
-        FDW_WRITE_ONESHOT = 4,
-        FDW_EOF = 8,
+        SOCKW_NONE = 0,
+        SOCKW_READ = 1,
+        SOCKW_WRITE = 2,
+        SOCKW_WRITE_ONESHOT = 4,
+        SOCKW_EOF = 8,
     };
 
     class SocketWatcher
@@ -24,62 +24,62 @@ namespace Net
             explicit SocketWatcher(int max_files);
             ~SocketWatcher();
 
-            // Aggiunge un file descriptor da monitorare, specificando i tipi di eventi (lettura/scrittura) e se deve essere monitorato una sola volta.
-            void add_fd(int fd, CAbstractPeer* client_data, int events, int oneshot);
+            // Aggiunge un socket da monitorare, specificando i tipi di eventi (lettura/scrittura) e se deve essere monitorato una sola volta.
+            void add_socket(int socket, CAbstractPeer* client_data, int events, int oneshot);
 
-            // Rimuove un file descriptor dalla lista dei file descriptor monitorati.
-            void remove_fd(int fd);
+            // Rimuove un socket dalla lista dei socket monitorati.
+            void remove_socket(int socket);
 
-            // Monitora i file descriptor per verificare quali sono pronti per la lettura o la scrittura, entro il timeout specificato.
+            // Monitora i socket per verificare quali sono pronti per la lettura o la scrittura, entro il timeout specificato.
             int monitor(struct timeval* timeout);
 
-            // Controlla se un file descriptor è pronto per la lettura o la scrittura.
-            int get_ready_flags(int fd) const;
+            // Controlla se un socket è pronto per la lettura o la scrittura.
+            int get_ready_flags(int socket) const;
 
-            // Ottiene i dati del client associati a un file descriptor pronto.
+            // Ottiene i dati del client associati a un socket pronto.
             CAbstractPeer* get_client_data(unsigned int event_index) const;
 
-            // Ottiene il file descriptor dall'indice dell'evento.
-            int get_fd_from_index(unsigned int event_index) const;
+            // Ottiene il socket dall'indice dell'evento.
+            int get_socket_from_index(unsigned int event_index) const;
 
-            // Cancella un evento specifico per un file descriptor.
-            void clear_event(int fd, unsigned int event_idx);
+            // Cancella un evento specifico per un socket.
+            void clear_event(int socket, unsigned int event_idx);
 
-            // Verifica se un determinato evento si è verificato per un file descriptor specifico.
-            int get_event_status(int fd, unsigned int event_idx) const;
+            // Verifica se un determinato evento si è verificato per un socket specifico.
+            int get_event_status(int socket, unsigned int event_idx) const;
 
         private:
-            // Cerca l'indice del file descriptor. Se il file descriptor è trovato, restituisce il suo indice; altrimenti, restituisce -1.
-            int find_fd_index(int fd) const;
+            // Cerca l'indice del socket. Se il socket è trovato, restituisce il suo indice; altrimenti, restituisce -1.
+            int find_socket_index(int socket) const;
 
-            // Utilizzato con "select" per determinare quali file descriptor sono pronti per la lettura
-            fd_set              read_fds_;
+            // Utilizzato con "select" per determinare quali socket sono pronti per la lettura
+            fd_set              read_sockets_;
 
-            // Utilizzato con "select" per determinare quali file descriptor sono pronti per la scrittura
-            fd_set              write_fds_;
+            // Utilizzato con "select" per determinare quali socket sono pronti per la scrittura
+            fd_set              write_sockets_;
 
-            // Contiene i file descriptor effettivamente monitorati per la lettura e/o scrittura. Ogni elemento del vettore rappresenta un file descriptor da monitorare.
-            std::vector<int>    monitored_fds_;
+            // Contiene i socket effettivamente monitorati per la lettura e/o scrittura. Ogni elemento del vettore rappresenta un socket da monitorare.
+            std::vector<int>    monitored_sockets_;
 
-            // Dopo una chiamata a select, questo vettore è riempito con gli indici dei file descriptor che hanno eventi pronti (lettura o scrittura).
-            std::vector<int>    ready_fd_indices_;
+            // Dopo una chiamata a select, questo vettore è riempito con gli indici dei socket che hanno eventi pronti (lettura o scrittura).
+            std::vector<int>    ready_socket_indices_;
 
-            // Copia di read_fds che viene passato alla chiamata select. È utilizzato per evitare la modifica del set originale durante l'uso di select.
-            fd_set              active_read_fds_;
+            // Copia di read_sockets che viene passato alla chiamata select. È utilizzato per evitare la modifica del set originale durante l'uso di select.
+            fd_set              active_read_sockets_;
 
-            // Copia di write_fds che viene passato alla chiamata select. È utilizzato per evitare la modifica del set originale durante l'uso di select.
-            fd_set              active_write_fds_;
+            // Copia di write_sockets che viene passato alla chiamata select. È utilizzato per evitare la modifica del set originale durante l'uso di select.
+            fd_set              active_write_sockets_;
 
-            // Indica la dimensione massima dei vettori "monitored_fds", "ready_fd_indices" e "fd_data"
-            int                 max_fds_;
+            // Indica la dimensione massima dei vettori "monitored_sockets", "ready_sockets_indices" e "socket_data"
+            int                 max_sockets_;
 
-            // Indica quanti file descriptor sono presenti nel vettore "monitored_fds" e sono attualmente monitorati.
-            int                 num_monitored_fds_;
+            // Indica quanti socket sono presenti nel vettore "monitored_sockets" e sono attualmente monitorati.
+            int                 num_monitored_sockets_;
 
-            // Vettore di puntatori che memorizza dati aggiuntivi associati a ciascun file descriptor monitorato.
-            std::vector<CAbstractPeer*> fd_data_;
+            // Vettore di puntatori che memorizza dati aggiuntivi associati a ciascun socket monitorato.
+            std::vector<CAbstractPeer*> socket_data_;
 
-            // Vettore di flag che indicano gli eventi monitorati per ciascun file descriptor (lettura, scrittura, o entrambi).
-            std::vector<int>    fd_event_flags_;
+            // Vettore di flag che indicano gli eventi monitorati per ciascun socket (lettura, scrittura, o entrambi).
+            std::vector<int>    socket_event_flags_;
     };
 };

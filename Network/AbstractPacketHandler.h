@@ -11,7 +11,7 @@ namespace Net
     {
         public:
             CAbstractPacketBaseHandler() = default;
-            virtual ~CAbstractPacketBaseHandler() = 0;
+            virtual ~CAbstractPacketBaseHandler() = default;
 
         public:
             virtual CSocket* GetSocket() = 0;
@@ -22,7 +22,7 @@ namespace Net
     {
         public:
             CAbstractPacketServerHandler() = default;
-            virtual ~CAbstractPacketServerHandler() = 0;
+            virtual ~CAbstractPacketServerHandler() = default;
 
         public:
             virtual bool Analyze(CAbstractPeer* peer, TPacketHeader header) = 0;
@@ -32,13 +32,9 @@ namespace Net
     {
         public:
             CAbstractPacketClientHandler() = default;
-            virtual ~CAbstractPacketClientHandler() = 0;
+            virtual ~CAbstractPacketClientHandler() = default;
 
         public:
             virtual bool Analyze(TPacketHeader header) = 0;
     };
-
-    inline CAbstractPacketBaseHandler::~CAbstractPacketBaseHandler() {}
-    inline CAbstractPacketServerHandler::~CAbstractPacketServerHandler() {}
-    inline CAbstractPacketClientHandler::~CAbstractPacketClientHandler() {}
 }

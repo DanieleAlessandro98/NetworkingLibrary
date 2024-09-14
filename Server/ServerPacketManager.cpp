@@ -6,5 +6,5 @@ using namespace Net;
 
 void CServerPacketManager::__LoadPacketHeaders()
 {
-	Set(PacketCGHeader::HEADER_CG_HANDSHAKE, CAbstractPacketManager::TPacketType(sizeof(TPacketCGHandshake), STATIC_SIZE_PACKET));
+	Set(PacketCSHeader::HEADER_CS_HANDSHAKE, CAbstractPacketManager::TPacketType(sizeof(TPacketCSHandshake), STATIC_SIZE_PACKET));
 }

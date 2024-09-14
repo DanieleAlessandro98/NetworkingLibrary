@@ -9,12 +9,12 @@ namespace Net
         __LoadPacketHeaders();
 	}
 
-	void CAbstractPacketManager::Set(PacketCGHeader header, const TPacketType& packetType)
+	void CAbstractPacketManager::Set(PacketCSHeader header, const TPacketType& packetType)
 	{
 		Set(static_cast<TPacketHeader>(header), packetType);
 	}
 
-	void CAbstractPacketManager::Set(PacketGCHeader header, const TPacketType& packetType)
+	void CAbstractPacketManager::Set(PacketSCHeader header, const TPacketType& packetType)
 	{
 		Set(static_cast<TPacketHeader>(header), packetType);
 	}

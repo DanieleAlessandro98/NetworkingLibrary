@@ -51,7 +51,7 @@ namespace Net
 		}
 
 		watcher = std::make_unique<SocketWatcher>(4096);
-		watcher->add_fd(listenSocket.GetSocket(), NULL, FDW_READ, false);
+		watcher->add_socket(listenSocket.GetSocket(), NULL, SOCKW_READ, false);
 
 		OnInitializeCompleted();
 		OnSocketListening();
@@ -73,7 +73,7 @@ namespace Net
 			d = watcher->get_client_data(event_idx);
 			if (!d)
 			{
-				if (FDW_READ == watcher->get_event_status(listenSocket.GetSocket(), event_idx))
+				if (SOCKW_READ == watcher->get_event_status(listenSocket.GetSocket(), event_idx))
 				{
 					HandleNewConnection();
 					watcher->clear_event(listenSocket.GetSocket(), event_idx);
@@ -93,7 +93,7 @@ namespace Net
 			int iRet = watcher->get_event_status(peerSocket->GetSocket(), event_idx);
 			switch (iRet)
 			{
-				case FDW_READ:
+				case SOCKW_READ:
 				{
 					if (!m_packetManager->ProcessRecv(d))
 					{
@@ -103,7 +103,7 @@ namespace Net
 				}
 				break;
 
-				case FDW_WRITE:
+				case SOCKW_WRITE:
 				{
 					if (!dataStream->ProcessSend(peerSocket->GetSocket()))
 					{
@@ -113,7 +113,7 @@ namespace Net
 				}
 				break;
 
-				case FDW_EOF:
+				case SOCKW_EOF:
 				{
 					d->SetPhase(PHASE_CLOSE);
 				}
@@ -157,7 +157,7 @@ namespace Net
 	{
 		DisconnectAll();
 
-		watcher->remove_fd(listenSocket.GetSocket());
+		watcher->remove_socket(listenSocket.GetSocket());
 		listenSocket.Close();
 	}
 }

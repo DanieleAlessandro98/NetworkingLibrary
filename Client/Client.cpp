@@ -36,9 +36,9 @@ bool Client::AnalyzePacket(Net::TPacketHeader header)
 {
 	bool ret = true;
 
-	switch (static_cast<Net::PacketGCHeader>(header))
+	switch (static_cast<Net::PacketSCHeader>(header))
 	{
-		case PacketGCHeader::HEADER_GC_HANDSHAKE:
+		case PacketSCHeader::HEADER_SC_HANDSHAKE:
 			ret = RecvHandshake();
 			break;
 
@@ -56,7 +56,7 @@ bool Client::RecvHandshake()
 	if (!connectSocket)
 		return false;
 
-	TPacketGCHandshake handshakePacket;
+	TPacketSCHandshake handshakePacket;
 	if (!CPacketIO::ReadPacketData(connectSocket.get(), handshakePacket))
 		return false;
 
@@ -69,7 +69,7 @@ bool Client::RecvHandshake()
 
 void Client::SendHandshake(uint32_t handshake, uint32_t time, long delta)
 {
-	TPacketCGHandshake packet;
+	TPacketCSHandshake packet;
 	packet.handshake = handshake;
 	packet.time = time;
 	packet.delta = delta;

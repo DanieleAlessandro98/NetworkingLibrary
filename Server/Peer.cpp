@@ -25,13 +25,13 @@ void CPeer::StartHandshake()
 
 void CPeer::SendHandshake(uint32_t curTime, long delta)
 {
-	Net::TPacketGCHandshake pack;
+	Net::TPacketSCHandshake pack;
 
 	pack.handshake = m_dwHandshake;
 	pack.time = curTime;
 	pack.delta = delta;
 
-	Packet(&pack, sizeof(Net::TPacketGCHandshake));
+	Packet(&pack, sizeof(Net::TPacketSCHandshake));
 }
 
 bool CPeer::HandshakeProcess(uint32_t time, long delta)

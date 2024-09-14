@@ -31,8 +31,8 @@ namespace Net
 
 			virtual void __LoadPacketHeaders() = 0;
 
-			void Set(PacketCGHeader header, const TPacketType& packetType);
-			void Set(PacketGCHeader header, const TPacketType& packetType);
+			void Set(PacketCSHeader header, const TPacketType& packetType);
+			void Set(PacketSCHeader header, const TPacketType& packetType);
 			bool Get(TPacketHeader header, TPacketType* pPacketType);
 
 			bool CheckPacket(CSocket* socket, TPacketHeader* packetHeader);

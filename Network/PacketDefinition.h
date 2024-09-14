@@ -13,27 +13,27 @@ namespace Net
         uint16_t	size;
     } TDynamicSizePacketHeader;
 
-    enum class PacketCGHeader : TPacketHeader
+    enum class PacketCSHeader : TPacketHeader
     {
-        HEADER_CG_HANDSHAKE = 1,
+        HEADER_CS_HANDSHAKE = 1,
     };
 
-    enum class PacketGCHeader : TPacketHeader
+    enum class PacketSCHeader : TPacketHeader
     {
-        HEADER_GC_HANDSHAKE = 1,
+        HEADER_SC_HANDSHAKE = 1,
     };
 
-    struct TPacketGCHandshake
+    struct TPacketSCHandshake
     {
-        PacketGCHeader header = PacketGCHeader::HEADER_GC_HANDSHAKE;
+        PacketSCHeader header = PacketSCHeader::HEADER_SC_HANDSHAKE;
         uint32_t	handshake;
         uint32_t	time;
         long	delta;
     };
 
-    struct TPacketCGHandshake
+    struct TPacketCSHandshake
     {
-        PacketCGHeader header = PacketCGHeader::HEADER_CG_HANDSHAKE;
+        PacketCSHeader header = PacketCSHeader::HEADER_CS_HANDSHAKE;
         uint32_t	handshake;
         uint32_t	time;
         long	delta;
