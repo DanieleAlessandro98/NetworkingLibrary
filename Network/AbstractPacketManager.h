@@ -11,6 +11,8 @@ namespace Net
 {
 	class CAbstractPacketManager
 	{
+		#define DEFINE_PACKET(header, structType, sizeType) Set(header, sizeof(structType), sizeType)
+
 		public:
 			typedef struct SPacketType
 			{
@@ -31,8 +33,8 @@ namespace Net
 
 			virtual void __LoadPacketHeaders() = 0;
 
-			void Set(PacketCSHeader header, const TPacketType& packetType);
-			void Set(PacketSCHeader header, const TPacketType& packetType);
+			void Set(PacketCSHeader header, size_t packetSize, bool isDynamic);
+			void Set(PacketSCHeader header, size_t packetSize, bool isDynamic);
 			bool Get(TPacketHeader header, TPacketType* pPacketType);
 
 			bool CheckPacket(CSocket* socket, TPacketHeader* packetHeader);

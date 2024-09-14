@@ -4,19 +4,19 @@
 
 namespace Net
 {
-    void CAbstractPacketManager::Initialize()
-    {
-        __LoadPacketHeaders();
+	void CAbstractPacketManager::Initialize()
+	{
+		__LoadPacketHeaders();
 	}
 
-	void CAbstractPacketManager::Set(PacketCSHeader header, const TPacketType& packetType)
+	void CAbstractPacketManager::Set(PacketCSHeader header, size_t packetSize, bool isDynamic)
 	{
-		Set(static_cast<TPacketHeader>(header), packetType);
+		Set(static_cast<TPacketHeader>(header), TPacketType(packetSize, isDynamic));
 	}
 
-	void CAbstractPacketManager::Set(PacketSCHeader header, const TPacketType& packetType)
+	void CAbstractPacketManager::Set(PacketSCHeader header, size_t packetSize, bool isDynamic)
 	{
-		Set(static_cast<TPacketHeader>(header), packetType);
+		Set(static_cast<TPacketHeader>(header), TPacketType(packetSize, isDynamic));
 	}
 
 	void CAbstractPacketManager::Set(TPacketHeader header, const TPacketType& rPacketType)
