@@ -80,8 +80,8 @@ Questa libreria offre una serie di classi e interfacce per gestire le connession
 - **Descrizione:** 
   Contiene le definizioni dei tipi di pacchetti inviati e ricevuti tra client e server, rappresentati tramite strutture e utilizzati per la comunicazione di basso livello.
 - **Esempi di pacchetti:**
-  - `TPacketCGHandshake`: Pacchetto di handshake inviato dal client e ricevuto dal server.
-  - `TPacketGCHandshake`: Pacchetto di handshake inviato dal server e ricevuto dal client.
+  - `TPacketCSHandshake`: Pacchetto di handshake inviato dal client e ricevuto dal server.
+  - `TPacketSCHandshake`: Pacchetto di handshake inviato dal server e ricevuto dal client.
 
 
 
