@@ -280,7 +280,7 @@ Il sistema supporta la creazione di componenti personalizzati, come gestori di p
    bool ServerLogin::Analyze(CAbstractPeer* peer, TPacketHeader header)
    {
        bool ret = true;
-       switch (static_cast<PacketCGHeader>(header))
+       switch (static_cast<PacketCSHeader>(header))
        {
            // Gestione degli header dei pacchetti per questa fase.
        }
@@ -309,18 +309,18 @@ Il sistema supporta la creazione di componenti personalizzati, come gestori di p
 1. **Definire l'Header del Nuovo Pacchetto in `PacketDefinition.h`**:
 
    ```cpp
-   enum class PacketCGHeader : TPacketHeader
+   enum class PacketCSHeader : TPacketHeader
    {
-       HEADER_CG_LOGIN = 2, // Nuovo pacchetto per login
+       HEADER_CS_LOGIN = 2, // Nuovo pacchetto per login (CS, client -> server)
    };
    ```
 
 2. **Definire la Struttura del Nuovo Pacchetto in `PacketDefinition.h`**:
 
    ```cpp
-   struct TPacketCGLogin
+   struct TPacketCSLogin
    {
-       PacketCGHeader header = PacketCGHeader::HEADER_CG_LOGIN;
+       PacketCSHeader header = PacketCSHeader::HEADER_CS_LOGIN;
        char username[21]; // 20 caratteri + terminatore null
        char password[21]; // 20 caratteri + terminatore null
    };
@@ -331,7 +331,7 @@ Il sistema supporta la creazione di componenti personalizzati, come gestori di p
    ```cpp
    void CServerPacketManager::__LoadPacketHeaders()
    {
-       Set(PacketCGHeader::HEADER_CG_LOGIN, CAbstractPacketManager::TPacketType(sizeof(TPacketCGLogin), STATIC_SIZE_PACKET));
+       DEFINE_PACKET(PacketCSHeader::HEADER_CS_LOGIN, TPacketCSLogin, STATIC_SIZE_PACKET);
    }
    ```
 
@@ -342,9 +342,9 @@ Il sistema supporta la creazione di componenti personalizzati, come gestori di p
    {
        bool ret = true;
 
-       switch (static_cast<PacketCGHeader>(header))
+       switch (static_cast<PacketCSHeader>(header))
        {
-           case PacketCGHeader::HEADER_CG_LOGIN:
+           case PacketCSHeader::HEADER_CS_LOGIN:
                ret = RecvLogin(peer);
                break;
        }
@@ -358,7 +358,7 @@ Il sistema supporta la creazione di componenti personalizzati, come gestori di p
        if (!peer)
            return false;
 
-       TPacketCGLogin login;
+       TPacketCSLogin login;
        if (!CPacketIO::ReadPacketData(peer->GetSocket(), login))
            return false;
 
